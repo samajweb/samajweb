@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Community</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; line-height:1.6; color:#333; }
+    img { max-width:100%; display:block; }
+    section { padding:60px 20px; }
+    .container { max-width:1200px; margin:0 auto; }
+    h2 { font-size:2.2rem; margin-bottom:20px; color:#013A81; text-align:center; }
+    p { margin-bottom:15px; }
+    
+    /* Hero Banner */
+    .hero { 
+      background:linear-gradient(135deg,#1e88e5 0%,#1565c0 100%); 
+      color:#fff; 
+      text-align:center; 
+      padding:100px 20px; 
+      position:relative; 
+      overflow:hidden;
+    }
+    .hero::before {
+      content:'';
+      position:absolute;
+      top:0;left:0;right:0;bottom:0;
+      background:url('https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1920&q=80') center/cover;
+      opacity:0.15;
+      z-index:0;
+    }
+    .hero-content { position:relative; z-index:1; max-width:800px; margin:0 auto; }
+    .hero h1 { font-size:3rem; margin-bottom:20px; font-weight:700; }
+    .hero p { font-size:1.3rem; margin-bottom:30px; }
+    .btn {
+      display:inline-block;
+      padding:15px 40px;
+      background:#F5B611;
+      color:#013A81;
+      text-decoration:none;
+      border-radius:8px;
+      font-weight:600;
+      font-size:1.1rem;
+      transition:all 0.3s ease;
+    }
+    .btn:hover { background:#FFD54F; transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,0.2); }
+    
+    /* About Us */
+    .about { background:#f9f9f9; }
+    .about-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:40px; margin-top:40px; }
+    .about-card {
+      background:#fff;
+      padding:30px;
+      border-radius:12px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.08);
+      text-align:center;
+      transition:transform 0.3s ease;
+    }
+    .about-card:hover { transform:translateY(-8px); }
+    .about-card i { font-size:3rem; color:#1e88e5; margin-bottom:15px; }
+    .about-card h3 { font-size:1.5rem; color:#013A81; margin-bottom:10px; }
+    
+    /* Events */
+    .events { background:#fff; }
+    .events-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:30px; margin-top:40px; }
+    .event-card {
+      background:#fff;
+      border-radius:15px;
+      overflow:hidden;
+      box-shadow:0 6px 15px rgba(0,0,0,0.1);
+      transition:all 0.3s ease;
+    }
+    .event-card:hover { transform:translateY(-8px); box-shadow:0 12px 25px rgba(0,0,0,0.15); }
+    .event-img {
+      height:200px;
+      background-size:cover;
+      background-position:center;
+    }
+    .event-content { padding:25px; }
+    .event-date {
+      display:inline-block;
+      background:#1e88e5;
+      color:#fff;
+      padding:5px 15px;
+      border-radius:20px;
+      font-size:0.9rem;
+      margin-bottom:10px;
+    }
+    .event-card h3 { font-size:1.4rem; color:#013A81; margin-bottom:10px; }
+    .event-card p { color:#666; font-size:0.95rem; }
+    
+    /* Members / Team */
+    .members { background:#f9f9f9; }
+    .members-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:30px; margin-top:40px; }
+    .member-card {
+      background:#fff;
+      border-radius:12px;
+      padding:25px;
+      text-align:center;
+      box-shadow:0 4px 12px rgba(0,0,0,0.08);
+      transition:transform 0.3s ease;
+    }
+    .member-card:hover { transform:scale(1.05); }
+    .member-avatar {
+      width:120px;
+      height:120px;
+      border-radius:50%;
+      margin:0 auto 15px;
+      background:#ddd;
+      overflow:hidden;
+    }
+    .member-avatar img { width:100%; height:100%; object-fit:cover; }
+    .member-card h4 { font-size:1.2rem; color:#013A81; margin-bottom:5px; }
+    .member-card .role { color:#1e88e5; font-size:0.9rem; margin-bottom:10px; }
+    .member-card .social a {
+      display:inline-block;
+      margin:0 5px;
+      color:#666;
+      font-size:1.2rem;
+      transition:color 0.3s;
+    }
+    .member-card .social a:hover { color:#1e88e5; }
+    
+    /* Gallery */
+    .gallery { background:#fff; }
+    .gallery-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+      gap:15px;
+      margin-top:40px;
+    }
+    .gallery-item {
+      height:250px;
+      background-size:cover;
+      background-position:center;
+      border-radius:10px;
+      overflow:hidden;
+      cursor:pointer;
+      transition:transform 0.3s ease;
+      position:relative;
+    }
+    .gallery-item:hover { transform:scale(1.05); }
+    .gallery-item::after {
+      content:'';
+      position:absolute;
+      top:0;left:0;right:0;bottom:0;
+      background:rgba(0,0,0,0);
+      transition:background 0.3s;
+    }
+    .gallery-item:hover::after { background:rgba(0,0,0,0.3); }
+    
+    /* Lightbox Popup */
+    .lightbox {
+      display:none;
+      position:fixed;
+      top:0;left:0;right:0;bottom:0;
+      background:rgba(0,0,0,0.95);
+      z-index:9999;
+      align-items:center;
+      justify-content:center;
+    }
+    .lightbox.active { display:flex; }
+    .lightbox-wrapper {
+      position:relative;
+      max-width:90%;
+      max-height:90%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .lightbox-content {
+      position:relative;
+      animation:zoomIn 0.3s ease;
+    }
+    .lightbox-content img {
+      max-width:100%;
+      max-height:90vh;
+      border-radius:8px;
+      box-shadow:0 0 40px rgba(255,255,255,0.2);
+      display:block;
+    }
+    @keyframes zoomIn {
+      from { transform:scale(0.8); opacity:0; }
+      to { transform:scale(1); opacity:1; }
+    }
+    .lightbox-close {
+      position:fixed;
+      top:20px;
+      right:20px;
+      font-size:40px;
+      color:#fff;
+      cursor:pointer;
+      background:rgba(0,0,0,0.7);
+      width:50px;
+      height:50px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:50%;
+      transition:background 0.3s;
+      z-index:10001;
+    }
+    .lightbox-close:hover { background:rgba(255,255,255,0.3); }
+    
+    /* Next/Prev buttons ON the image */
+    .lightbox-prev, .lightbox-next {
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      font-size:40px;
+      color:#fff;
+      cursor:pointer;
+      background:rgba(0,0,0,0.7);
+      width:60px;
+      height:60px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:50%;
+      transition:all 0.3s;
+      user-select:none;
+      z-index:10000;
+    }
+    .lightbox-prev { left:10px; }
+    .lightbox-next { right:10px; }
+    .lightbox-prev:hover, .lightbox-next:hover { 
+      background:rgba(255,255,255,0.3); 
+      transform:translateY(-50%) scale(1.15); 
+    }
+    
+    .lightbox-counter {
+      position:fixed;
+      bottom:20px;
+      left:50%;
+      transform:translateX(-50%);
+      color:#fff;
+      font-size:1.1rem;
+      background:rgba(0,0,0,0.7);
+      padding:10px 20px;
+      border-radius:30px;
+      z-index:10001;
+    }
+    
+    /* Contact / Join */
+    .contact { background:#1e88e5; color:#fff; text-align:center; }
+    .contact h2 { color:#fff; }
+    .contact p { font-size:1.2rem; margin-bottom:30px; }
+    .contact .btn { background:#F5B611; color:#013A81; }
+    
+    /* Footer */
+    footer {
+      background:#013A81;
+      color:#fff;
+      padding:40px 20px;
+      text-align:center;
+    }
+    footer .social-links a {
+      display:inline-block;
+      margin:0 10px;
+      color:#fff;
+      font-size:1.5rem;
+      transition:color 0.3s;
+    }
+    footer .social-links a:hover { color:#F5B611; }
+    footer p { margin-top:20px; font-size:0.9rem; }
+    
+    @media (max-width:768px) {
+      .hero h1 { font-size:2rem; }
+      .hero p { font-size:1.1rem; }
+      h2 { font-size:1.8rem; }
+      .lightbox-prev, .lightbox-next { 
+        width:50px; 
+        height:50px; 
+        font-size:28px; 
+      }
+      .lightbox-prev { left:5px; }
+      .lightbox-next { right:5px; }
+      .lightbox-close { 
+        top:10px; 
+        right:10px; 
+        width:45px; 
+        height:45px; 
+        font-size:30px; 
+      }
+      .lightbox-counter { 
+        bottom:10px; 
+        font-size:1rem; 
+        padding:8px 16px; 
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Hero Banner -->
+<section class="hero">
+  <div class="hero-content">
+    <h1><i class="fas fa-users"></i> Welcome to Our Community</h1>
+    <p>Building connections, sharing knowledge, and growing together.</p>
+    <a href="#join" class="btn">Join Us Today</a>
+  </div>
+</section>
+
+<!-- About Us -->
+<section class="about">
+  <div class="container">
+    <h2>About Us</h2>
+    <p style="text-align:center;max-width:700px;margin:0 auto 20px;color:#666;">
+      We are a vibrant community dedicated to fostering collaboration, learning, and meaningful connections. Our mission is to empower members through shared experiences and collective growth.
+    </p>
+    <div class="about-grid">
+      <div class="about-card">
+        <i class="fas fa-bullseye"></i>
+        <h3>Our Mission</h3>
+        <p>To create an inclusive space where everyone can learn, share, and thrive together.</p>
+      </div>
+      <div class="about-card">
+        <i class="fas fa-eye"></i>
+        <h3>Our Vision</h3>
+        <p>A connected world where communities support each other and drive positive change.</p>
+      </div>
+      <div class="about-card">
+        <i class="fas fa-heart"></i>
+        <h3>Our Values</h3>
+        <p>Integrity, collaboration, respect, innovation, and empowerment for all members.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Events -->
+<section class="events">
+  <div class="container">
+    <h2>Upcoming Events</h2>
+    <p style="text-align:center;color:#666;margin-bottom:20px;">Join us at our next events and connect with fellow community members.</p>
+    <div class="events-grid">
+      
+      <div class="event-card">
+        <div class="event-img" style="background-image:url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80');"></div>
+        <div class="event-content">
+          <span class="event-date"><i class="far fa-calendar-alt"></i> Jan 15, 2026</span>
+          <h3>Community Meetup</h3>
+          <p>Join us for an evening of networking, sharing ideas, and building connections.</p>
+        </div>
+      </div>
+
+      <div class="event-card">
+        <div class="event-img" style="background-image:url('https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=800&q=80');"></div>
+        <div class="event-content">
+          <span class="event-date"><i class="far fa-calendar-alt"></i> Feb 10, 2026</span>
+          <h3>Skills Workshop</h3>
+          <p>Learn new skills from expert speakers and hands-on practice sessions.</p>
+        </div>
+      </div>
+
+      <div class="event-card">
+        <div class="event-img" style="background-image:url('https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=800&q=80');"></div>
+        <div class="event-content">
+          <span class="event-date"><i class="far fa-calendar-alt"></i> Mar 5, 2026</span>
+          <h3>Annual Conference</h3>
+          <p>Our biggest event of the year featuring keynotes, panels, and networking.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Members / Team -->
+<section class="members">
+  <div class="container">
+    <h2>Meet Our Team</h2>
+    <p style="text-align:center;color:#666;margin-bottom:20px;">Passionate individuals leading our community forward.</p>
+    <div class="members-grid">
+      
+      <div class="member-card">
+        <div class="member-avatar">
+          <img src="https://i.pravatar.cc/150?img=12" alt="Member">
+        </div>
+        <h4>Sarah Johnson</h4>
+        <p class="role">Community Lead</p>
+        <div class="social">
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+
+      <div class="member-card">
+        <div class="member-avatar">
+          <img src="https://i.pravatar.cc/150?img=33" alt="Member">
+        </div>
+        <h4>Michael Chen</h4>
+        <p class="role">Events Coordinator</p>
+        <div class="social">
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+
+      <div class="member-card">
+        <div class="member-avatar">
+          <img src="https://i.pravatar.cc/150?img=27" alt="Member">
+        </div>
+        <h4>Priya Patel</h4>
+        <p class="role">Outreach Manager</p>
+        <div class="social">
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+
+      <div class="member-card">
+        <div class="member-avatar">
+          <img src="https://i.pravatar.cc/150?img=15" alt="Member">
+        </div>
+        <h4>David Kim</h4>
+        <p class="role">Tech Lead</p>
+        <div class="social">
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Gallery with Lightbox -->
+<section class="gallery">
+  <div class="container">
+    <h2>Community Gallery</h2>
+    <p style="text-align:center;color:#666;margin-bottom:20px;">Moments from our events and activities.</p>
+    <div class="gallery-grid">
+      <div class="gallery-item" style="background-image:url('https://images.unsplash.com/photo-1528605105345-5344ea20e269?auto=format&fit=crop&w=1200&q=80');" onclick="openLightbox(0)"></div>
+      <div class="gallery-item" style="background-image:url('https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80');" onclick="openLightbox(1)"></div>
+      <div class="gallery-item" style="background-image:url('https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=1200&q=80');" onclick="openLightbox(2)"></div>
+      <div class="gallery-item" style="background-image:url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=80');" onclick="openLightbox(3)"></div>
+      <div class="gallery-item" style="background-image:url('https://images.unsplash.com/photo-1551818255-e6e10975bc17?auto=format&fit=crop&w=1200&q=80');" onclick="openLightbox(4)"></div>
+      <div class="gallery-item" style="background-image:url('https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1200&q=80');" onclick="openLightbox(5)"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Lightbox Popup -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+  <div class="lightbox-counter" id="lightbox-counter"></div>
+  
+  <div class="lightbox-wrapper" onclick="event.stopPropagation()">
+    <div class="lightbox-prev" onclick="changeImage(-1);event.stopPropagation()">&#10094;</div>
+    <div class="lightbox-content">
+      <img id="lightbox-img" src="" alt="Gallery Image">
+    </div>
+    <div class="lightbox-next" onclick="changeImage(1);event.stopPropagation()">&#10095;</div>
+  </div>
+</div>
+
+<!-- Join / Contact CTA -->
+<section class="contact" id="join">
+  <div class="container">
+    <h2>Ready to Join?</h2>
+    <p>Become part of our growing community and start your journey with us today.</p>
+    <a href="#" class="btn">Get Started</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="social-links">
+      <a href="#"><i class="fab fa-facebook"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-linkedin"></i></a>
+    </div>
+    <p>&copy; 2025 Our Community. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  // Gallery images array
+  const galleryImages = [
+    'https://images.unsplash.com/photo-1528605105345-5344ea20e269?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1551818255-e6e10975bc17?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1200&q=80'
+  ];
+  
+  let currentImageIndex = 0;
+  
+  function openLightbox(index) {
+    currentImageIndex = index;
+    document.getElementById('lightbox').classList.add('active');
+    updateImage();
+    document.body.style.overflow = 'hidden';
+  }
+  
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+  
+  function changeImage(direction) {
+    currentImageIndex += direction;
+    if (currentImageIndex < 0) {
+      currentImageIndex = galleryImages.length - 1;
+    } else if (currentImageIndex >= galleryImages.length) {
+      currentImageIndex = 0;
+    }
+    updateImage();
+  }
+  
+  function updateImage() {
+    document.getElementById('lightbox-img').src = galleryImages[currentImageIndex];
+    document.getElementById('lightbox-counter').textContent = (currentImageIndex + 1) + ' / ' + galleryImages.length;
+  }
+  
+  // Keyboard navigation
+  document.addEventListener('keydown', function(e) {
+    if (document.getElementById('lightbox').classList.contains('active')) {
+      if (e.key === 'ArrowLeft') changeImage(-1);
+      if (e.key === 'ArrowRight') changeImage(1);
+      if (e.key === 'Escape') closeLightbox();
+    }
+  });
+</script>
+
+</body>
+</html>
