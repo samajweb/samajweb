@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events | Shri Mumbai Purush Samaj</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .events-calendar {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 40px;
+            margin-top: 40px;
+        }
+        
+        .calendar-sidebar {
+            background: white;
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid var(--border);
+        }
+        
+        .calendar-header {
+            text-align: center;
+            margin-bottom: 30px;
+            margin-top: 20px;
+        }
+        
+        .calendar-header h3 {
+            color: var(--primary);
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            margin-bottom: 20px;
+        }
+        
+        .calendar-day {
+            text-align: center;
+            padding: 5px;
+            font-weight: 600;
+            color: var(--gray);
+        }
+        
+        .calendar-date {
+            text-align: center;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .calendar-date:hover {
+            background: var(--light-gray);
+        }
+        
+        .calendar-date.active {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .calendar-date.has-event {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--secondary);
+            font-weight: 600;
+        }
+        
+        .event-detail-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+        
+        .event-meta {
+            display: flex;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--gray);
+        }
+        
+        .registration-form {
+            background: var(--light-gray);
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        
+        .past-events {
+            margin-top: 60px;
+        }
+        
+        .past-event-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">SHRI <span>MUMBAI</span> SAMAJ</a>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="committee.html">Committee</a></li>
+                <li><a href="membership.html">Membership</a></li>
+                <li><a href="hotels.html">Hotels</a></li>
+                <li><a href="samaj-book.html">Samaj Book</a></li>
+                <li><a href="events.html" class="active">Events</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="donations.html">Donations</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <section class="hero-banner" style="padding: 80px 0; margin-top: 70px;">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Events & Activities</h1>
+                <p>Stay updated with our upcoming events, workshops, and community gatherings</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- EVENTS SECTION -->
+    <section class="section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Upcoming Events</h2>
+            <p>Join us for enriching experiences and community building</p>
+        </div>
+        
+        <div class="events-calendar">
+            <!-- Calendar Sidebar -->
+            <div class="calendar-sidebar">
+                <div class="calendar-header">
+                    <h3>November 2024</h3>
+                    <p style="color: var(--gray); font-size: 0.9rem;">Select a date to view events</p>
+                </div>
+                
+                <div class="calendar-grid">
+                    <div class="calendar-day">Sun</div>
+                    <div class="calendar-day">Mon</div>
+                    <div class="calendar-day">Tue</div>
+                    <div class="calendar-day">Wed</div>
+                    <div class="calendar-day">Thu</div>
+                    <div class="calendar-day">Fri</div>
+                    <div class="calendar-day">Sat</div>
+                    
+                    <!-- Calendar dates - Responsive -->
+                    <div class="calendar-date">27</div>
+                    <div class="calendar-date">28</div>
+                    <div class="calendar-date">29</div>
+                    <div class="calendar-date">30</div>
+                    <div class="calendar-date">31</div>
+                    <div class="calendar-date">1</div>
+                    <div class="calendar-date">2</div>
+                    <div class="calendar-date">3</div>
+                    <div class="calendar-date">4</div>
+                    <div class="calendar-date">5</div>
+                    <div class="calendar-date">6</div>
+                    <div class="calendar-date">7</div>
+                    <div class="calendar-date">8</div>
+                    <div class="calendar-date">9</div>
+                    <div class="calendar-date">10</div>
+                    <div class="calendar-date">11</div>
+                    <div class="calendar-date has-event active">12</div>
+                    <div class="calendar-date">13</div>
+                    <div class="calendar-date">14</div>
+                    <div class="calendar-date">15</div>
+                    <div class="calendar-date">16</div>
+                    <div class="calendar-date">17</div>
+                    <div class="calendar-date">18</div>
+                    <div class="calendar-date">19</div>
+                    <div class="calendar-date">20</div>
+                    <div class="calendar-date">21</div>
+                    <div class="calendar-date">22</div>
+                    <div class="calendar-date">23</div>
+                    <div class="calendar-date">24</div>
+                    <div class="calendar-date has-event">25</div>
+                    <div class="calendar-date">26</div>
+                    <div class="calendar-date">27</div>
+                    <div class="calendar-date">28</div>
+                    <div class="calendar-date">29</div>
+                    <div class="calendar-date">30</div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <button class="btn btn-small" onclick="showAllEvents()">View All Events</button>
+                </div>
+            </div>
+            
+            <!-- Event Details - Now properly contained -->
+            <div>
+                <div class="event-detail-card">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                        <h2 style="color: var(--primary); flex: 1; min-width: 250px;">Annual Diwali Celebration</h2>
+                        <span style="background: var(--accent); color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.9rem; font-weight: 600;">Upcoming</span>
+                    </div>
+                    
+                    <p>Join us for our grand Diwali celebration featuring cultural performances, traditional dinner, fireworks, and networking opportunities with community members.</p>
+                    
+                    <div class="event-meta">
+                        <div class="meta-item">
+                            <span>📅</span>
+                            <div>
+                                <div style="font-weight: 600;">12 November 2024</div>
+                                <div style="font-size: 0.9rem; color: var(--gray);">Tuesday</div>
+                            </div>
+                        </div>
+                        
+                        <div class="meta-item">
+                            <span>⏰</span>
+                            <div>
+                                <div style="font-weight: 600;">6:00 PM Onwards</div>
+                                <div style="font-size: 0.9rem; color: var(--gray);">Duration: 4 hours</div>
+                            </div>
+                        </div>
+                        
+                        <div class="meta-item">
+                            <span>📍</span>
+                            <div>
+                                <div style="font-weight: 600;">Samaj Bhawan</div>
+                                <div style="font-size: 0.9rem; color: var(--gray);">123 Cultural Street, Mumbai</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3 style="color: var(--primary); margin: 1.5rem 0 0.75rem;">Event Schedule</h3>
+                    <ul style="margin-bottom: 1rem; padding-left: 1.5rem; list-style: none;">
+                        <li style="margin-bottom: 0.5rem; padding-left: 1.5rem; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--accent);">•</span> 6:00 PM - Welcome & Lighting of Lamps
+                        </li>
+                        <li style="margin-bottom: 0.5rem; padding-left: 1.5rem; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--accent);">•</span> 6:30 PM - Cultural Performances
+                        </li>
+                        <li style="margin-bottom: 0.5rem; padding-left: 1.5rem; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--accent);">•</span> 8:00 PM - Traditional Dinner
+                        </li>
+                        <li style="margin-bottom: 0.5rem; padding-left: 1.5rem; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--accent);">•</span> 9:00 PM - Fireworks Display
+                        </li>
+                        <li style="margin-bottom: 0.5rem; padding-left: 1.5rem; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--accent);">•</span> 9:30 PM - Networking & Socializing
+                        </li>
+                    </ul>
+                    
+                    <div class="registration-form">
+                        <h3 style="color: var(--primary); margin-bottom: 1rem;">Register for Event</h3>
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+                            <input type="text" placeholder="Your Name" class="form-control">
+                            <input type="tel" placeholder="Mobile Number" class="form-control">
+                            <input type="email" placeholder="Email Address" class="form-control">
+                            <select class="form-control">
+                                <option value="">Number of Guests</option>
+                                <option value="1">1 Person</option>
+                                <option value="2">2 Persons</option>
+                                <option value="3">3 Persons</option>
+                                <option value="4">4 Persons</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-full mt-3">Confirm Registration</button>
+                    </div>
+                </div>
+                
+                <!-- More Events -->
+                <div class="event-detail-card">
+                    <h2 style="color: var(--primary); margin-bottom: 0.75rem;">Business Networking Conference</h2>
+                    <p style="margin-bottom: 1rem;">Connect with industry leaders, entrepreneurs, and professionals for collaborative opportunities and business growth.</p>
+                    
+                    <div class="event-meta">
+                        <div class="meta-item">
+                            <span>📅</span>
+                            <div style="font-weight: 600;">25 November 2024</div>
+                        </div>
+                        <div class="meta-item">
+                            <span>⏰</span>
+                            <div style="font-weight: 600;">5:00 PM - 8:00 PM</div>
+                        </div>
+                        <div class="meta-item">
+                            <span>📍</span>
+                            <div style="font-weight: 600;">Conference Hall</div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn mt-3">View Details</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Past Events - Fixed -->
+        <div class="mt-5">
+            <h2 style="color: var(--primary); margin-bottom: 1.5rem; text-align: center;">Past Events</h2>
+            
+            <div class="event-detail-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <h3 style="color: var(--primary); margin-bottom: 0.5rem;">Annual Holi Celebration</h3>
+                        <p style="color: var(--gray); font-size: 0.9rem;">March 15, 2024 | Samaj Bhawan</p>
+                    </div>
+                    <a href="gallery.html" class="btn btn-secondary">View Photos</a>
+                </div>
+            </div>
+            
+            <div class="event-detail-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <h3 style="color: var(--primary); margin-bottom: 0.5rem;">Yoga & Wellness Workshop</h3>
+                        <p style="color: var(--gray); font-size: 0.9rem;">February 20, 2024 | Community Hall</p>
+                    </div>
+                    <a href="gallery.html" class="btn btn-secondary">View Photos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <a href="index.html" class="footer-logo">SHRI MUMBAI SAMAJ</a>
+                    <p style="color:#bdc3c7;margin-bottom:25px;line-height:1.7;">A premier community organization dedicated to cultural preservation, professional development, and social service since 1995.</p>
+                    <div style="color:#bdc3c7;">
+                        <p>📍 123 Cultural Street, Mumbai 400028</p>
+                        <p>📞 022-12345678</p>
+                        <p>📧 info@mumbaipurushsamaj.org</p>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="committee.html">Committee</a></li>
+                        <li><a href="membership.html">Membership</a></li>
+                        <li><a href="events.html">Events Calendar</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="hotels.html">Partner Hotels</a></li>
+                        <li><a href="gallery.html">Photo Gallery</a></li>
+                        <li><a href="donations.html">Make Donation</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <ul>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="#">LinkedIn</a></li>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">YouTube</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2024 Shri Mumbai Purush Samaj. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script>
+        function showAllEvents() {
+            alert('Showing all upcoming events for 2024');
+            // This would typically filter/show all events
+        }
+    </script>
+</body>
+</html>

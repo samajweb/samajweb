@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Hotels | Shri Mumbai Purush Samaj</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* ===== RESPONSIVE BASE ===== */
+        * {
+            box-sizing: border-box;
+        }
+        
+        /* Hotel Grid - Responsive */
+        .hotels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .hotels-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .hotels-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .hotel-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            width: 100%;
+            display: block;
+        }
+        
+        @media (max-width: 480px) {
+            .hotel-card {
+                padding: 15px;
+                margin: 0;
+            }
+        }
+        
+        .hotel-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        }
+        
+        .hotel-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        @media (max-width: 480px) {
+            .hotel-header {
+                gap: 12px;
+            }
+        }
+        
+        .hotel-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, var(--secondary), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        @media (max-width: 480px) {
+            .hotel-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+        }
+        
+        .hotel-info {
+            flex: 1;
+            min-width: 0; /* Prevents overflow */
+        }
+        
+        .hotel-info h3 {
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-size: 20px;
+            font-weight: 600;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        @media (max-width: 480px) {
+            .hotel-info h3 {
+                font-size: 18px;
+            }
+        }
+        
+        .hotel-rating {
+            color: #f39c12;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .hotel-cuisine {
+            color: var(--gray);
+            font-size: 13px;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        
+        .hotel-contact {
+            color: var(--gray);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        .hotel-contact strong {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .hotel-contact p {
+            margin-bottom: 8px;
+            word-wrap: break-word;
+        }
+        
+        .view-menu-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            width: 100%;
+            transition: background 0.3s;
+            font-size: 15px;
+        }
+        
+        @media (max-width: 480px) {
+            .view-menu-btn {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+        }
+        
+        .view-menu-btn:hover {
+            background: #2980b9;
+        }
+        
+        /* ===== MENU POPUP - RESPONSIVE ===== */
+        .menu-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .menu-popup {
+                padding: 10px;
+                align-items: flex-start;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .menu-popup-content {
+            background: white;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 1000px;
+            max-height: 95vh;
+            overflow-y: auto;
+            position: relative;
+            margin: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .menu-popup-content {
+                max-height: 90vh;
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .menu-popup-content {
+                max-height: 85vh;
+                border-radius: 10px;
+            }
+        }
+        
+        .menu-header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        @media (max-width: 480px) {
+            .menu-header {
+                padding: 15px;
+            }
+        }
+        
+        .menu-header h2 {
+            margin-bottom: 5px;
+            font-size: 24px;
+            font-weight: 600;
+            word-wrap: break-word;
+        }
+        
+        @media (max-width: 768px) {
+            .menu-header h2 {
+                font-size: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .menu-header h2 {
+                font-size: 18px;
+            }
+        }
+        
+        .menu-header p {
+            opacity: 0.9;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+        
+        @media (max-width: 480px) {
+            .menu-header p {
+                font-size: 13px;
+            }
+        }
+        
+        .menu-images-container {
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @media (max-width: 480px) {
+            .menu-images-container {
+                padding: 15px;
+                min-height: 250px;
+            }
+        }
+        
+        /* Image Wrapper - Responsive */
+        .menu-image-wrapper {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+            height: 60vh;
+            min-height: 300px;
+        }
+        
+        @media (max-width: 768px) {
+            .menu-image-wrapper {
+                height: 50vh;
+                min-height: 250px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .menu-image-wrapper {
+                height: 40vh;
+                min-height: 200px;
+                border-radius: 6px;
+            }
+        }
+        
+        .menu-image-wrapper:active {
+            cursor: grabbing;
+        }
+        
+        .menu-image-slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .menu-image-slide.active {
+            display: block;
+            animation: fadeSlide 0.3s ease;
+        }
+        
+        @keyframes fadeSlide {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .menu-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transform-origin: 0 0;
+            transition: transform 0.1s;
+            cursor: zoom-in;
+        }
+        
+        .menu-image.zoomed {
+            cursor: zoom-out;
+        }
+        
+        /* Zoom Controls - Responsive */
+        .zoom-controls {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            display: flex;
+            gap: 8px;
+            z-index: 5;
+            background: rgba(0,0,0,0.7);
+            padding: 8px;
+            border-radius: 8px;
+        }
+        
+        @media (max-width: 480px) {
+            .zoom-controls {
+                bottom: 10px;
+                right: 10px;
+                gap: 6px;
+                padding: 6px;
+            }
+        }
+        
+        .zoom-btn {
+            width: 36px;
+            height: 36px;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        @media (max-width: 480px) {
+            .zoom-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+        }
+        
+        .zoom-btn:hover {
+            background: var(--secondary);
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .reset-zoom {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .reset-zoom:hover {
+            background: #16a085;
+        }
+        
+        /* Navigation - Responsive */
+        .menu-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding: 0 15px;
+            width: 100%;
+            max-width: 900px;
+        }
+        
+        @media (max-width: 480px) {
+            .menu-navigation {
+                margin-top: 15px;
+                padding: 0 10px;
+            }
+        }
+        
+        .nav-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+        }
+        
+        @media (max-width: 480px) {
+            .nav-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+        }
+        
+        .nav-btn:hover {
+            background: #2980b9;
+            transform: scale(1.1);
+        }
+        
+        .image-counter {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 16px;
+            padding: 0 15px;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            min-width: 80px;
+        }
+        
+        @media (max-width: 480px) {
+            .image-counter {
+                font-size: 14px;
+                padding: 6px 12px;
+                min-width: 70px;
+            }
+        }
+        
+        /* Zoom Instructions - Responsive */
+        .zoom-instructions {
+            text-align: center;
+            margin-top: 15px;
+            color: var(--gray);
+            font-size: 13px;
+            background: rgba(52, 152, 219, 0.1);
+            padding: 8px 12px;
+            border-radius: 6px;
+            width: 100%;
+            max-width: 900px;
+            margin: 15px auto 0;
+            line-height: 1.4;
+        }
+        
+        @media (max-width: 768px) {
+            .zoom-instructions {
+                font-size: 12px;
+                padding: 6px 10px;
+                display: none; /* Hide on mobile to save space */
+            }
+        }
+        
+        .zoom-instructions span {
+            display: inline-block;
+            margin: 0 3px;
+            padding: 2px 6px;
+            background: white;
+            border-radius: 4px;
+            font-weight: 600;
+            color: var(--primary);
+            border: 1px solid var(--border);
+            font-size: 12px;
+        }
+        
+        /* Contact Info - Responsive */
+        .menu-contact-info {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid var(--border);
+        }
+        
+        @media (max-width: 480px) {
+            .menu-contact-info {
+                padding: 15px;
+            }
+        }
+        
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        @media (max-width: 480px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        @media (max-width: 480px) {
+            .contact-item {
+                gap: 10px;
+            }
+        }
+        
+        .contact-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--light-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--secondary);
+            flex-shrink: 0;
+        }
+        
+        @media (max-width: 480px) {
+            .contact-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+        }
+        
+        .close-popup {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 11;
+        }
+        
+        @media (max-width: 480px) {
+            .close-popup {
+                top: 10px;
+                right: 10px;
+                width: 32px;
+                height: 32px;
+                font-size: 18px;
+            }
+        }
+        
+        .close-popup:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .no-menu {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+        
+        @media (max-width: 480px) {
+            .no-menu {
+                padding: 30px 15px;
+            }
+            
+            .no-menu h3 {
+                font-size: 18px;
+            }
+        }
+        
+        .call-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+            box-shadow: 0 4px 12px rgba(26, 188, 156, 0.3);
+            font-size: 15px;
+        }
+        
+        @media (max-width: 480px) {
+            .call-btn {
+                padding: 10px 20px;
+                font-size: 14px;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        .call-btn:hover {
+            background: #16a085;
+            transform: translateY(-2px);
+        }
+        
+        /* Search Bar - Responsive */
+        .search-container {
+            max-width: 600px;
+            margin: 30px auto;
+            width: 100%;
+            padding: 0 15px;
+        }
+        
+        @media (max-width: 480px) {
+            .search-container {
+                margin: 20px auto;
+                padding: 0 10px;
+            }
+        }
+        
+        .search-box {
+            position: relative;
+            width: 100%;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 14px 45px 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border 0.3s;
+        }
+        
+        @media (max-width: 480px) {
+            .search-box input {
+                padding: 12px 40px 12px 15px;
+                font-size: 14px;
+            }
+        }
+        
+        .search-box input:focus {
+            border-color: var(--secondary);
+            outline: none;
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            font-size: 18px;
+        }
+        
+        @media (max-width: 480px) {
+            .search-icon {
+                right: 12px;
+                font-size: 16px;
+            }
+        }
+        
+        /* Thumbnails - Responsive */
+        .image-thumbnails {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            padding: 0 10px;
+        }
+        
+        @media (max-width: 480px) {
+            .image-thumbnails {
+                gap: 6px;
+                margin-top: 12px;
+            }
+        }
+        
+        .thumbnail {
+            width: 50px;
+            height: 50px;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+        
+        @media (max-width: 480px) {
+            .thumbnail {
+                width: 40px;
+                height: 40px;
+            }
+        }
+        
+        .thumbnail:hover {
+            transform: scale(1.1);
+            border-color: var(--secondary);
+        }
+        
+        .thumbnail.active {
+            border-color: var(--secondary);
+            transform: scale(1.1);
+        }
+        
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--light-gray);
+            border-top: 3px solid var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        /* Section Title - Responsive */
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 0 15px;
+        }
+        
+        @media (max-width: 480px) {
+            .section-title {
+                margin-bottom: 20px;
+                padding: 0 10px;
+            }
+            
+            .section-title h2 {
+                font-size: 24px !important;
+            }
+            
+            .section-title p {
+                font-size: 14px !important;
+            }
+        }
+        
+        /* Container Fix */
+        /*.container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }*/
+        
+        @media (max-width: 480px) {
+            /*.container {
+                padding: 0 10px;
+            }*/
+        }
+        
+        /* Section Padding Fix */
+        .section {
+            padding: 60px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .section {
+                padding: 40px 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .section {
+                padding: 30px 0;
+            }
+        }
+        
+        /* Hero Banner Fix */
+        .hero-banner {
+            padding: 60px 0 !important;
+            margin-top: 70px !important;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-banner {
+                padding: 40px 0 !important;
+            }
+            
+            .hero-content h1 {
+                font-size: 28px !important;
+            }
+            
+            .hero-content p {
+                font-size: 16px !important;
+                padding: 0 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-banner {
+                padding: 30px 0 !important;
+            }
+            
+            .hero-content h1 {
+                font-size: 24px !important;
+                padding: 0 10px;
+            }
+            
+            .hero-content p {
+                font-size: 14px !important;
+                padding: 0 10px;
+            }
+        }
+        
+        /* Navigation Mobile Fix */
+        @media (max-width: 992px) {
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: white;
+                flex-direction: column;
+                padding: 15px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                z-index: 1000;
+            }
+            
+            .nav-menu.active {
+                display: flex;
+            }
+            
+            .nav-menu li {
+                width: 100%;
+            }
+            
+            .nav-menu a {
+                display: block;
+                padding: 12px 15px;
+                border-radius: 6px;
+                margin-bottom: 5px;
+            }
+            
+            .mobile-menu-btn {
+                display: block !important;
+                background: none;
+                border: none;
+                font-size: 24px;
+                color: var(--primary);
+                cursor: pointer;
+            }
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+        }
+        
+        /* Ensure images don't overflow */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        /* Text overflow handling */
+        .truncate {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* Mobile touch improvements */
+        @media (max-width: 768px) {
+            button, .nav-btn, .zoom-btn {
+                min-height: 44px; /* Minimum touch target size */
+            }
+            
+            input, select, textarea {
+                font-size: 16px; /* Prevents iOS zoom on focus */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">SHRI <span>MUMBAI</span> SAMAJ</a>
+            
+            <!-- Mobile Menu Button -->
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+            
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="committee.html">Committee</a></li>
+                <li><a href="membership.html">Membership</a></li>
+                <li><a href="hotels.html" class="active">Hotels</a></li>
+                <li><a href="samaj-book.html">Samaj Book</a></li>
+                <li><a href="events.html">Events</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="donations.html">Donations</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <section class="hero-banner">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Partner Hotels & Restaurants</h1>
+                <p>Check menus and order food from our trusted partner establishments</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEARCH BAR -->
+    <section class="section">
+        <div class="container">
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" id="hotelSearch" placeholder="Search hotels by name or cuisine..." onkeyup="searchHotels()">
+                    <div class="search-icon">🔍</div>
+                </div>
+            </div>
+            
+            <div class="section-title">
+                <h2 style="color: var(--primary); margin-bottom: 15px;">Our Partner Hotels</h2>
+                <p style="color: var(--gray); max-width: 600px; margin: 0 auto;">Click on any hotel to view their menu and contact details</p>
+            </div>
+            
+            <!-- HOTELS GRID -->
+            <div class="hotels-grid" id="hotelsContainer">
+                <!-- Hotels will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- MENU POPUP MODAL -->
+    <div class="menu-popup" id="menuPopup">
+        <div class="menu-popup-content">
+            <button class="close-popup" onclick="closeMenuPopup()">&times;</button>
+            
+            <div class="menu-header">
+                <h2 id="popupHotelName">Hotel Name</h2>
+                <p id="popupHotelCuisine">Cuisine Type</p>
+            </div>
+            
+            <div class="menu-images-container">
+                <div class="menu-image-wrapper" id="menuImageWrapper">
+                    <div class="no-menu" id="noMenuMessage">
+                        <div style="font-size: 40px; margin-bottom: 15px;">📋</div>
+                        <h3>Menu Not Available</h3>
+                        <p>Menu images for this hotel haven't been uploaded yet.</p>
+                        <p>Please call the hotel directly for menu details.</p>
+                    </div>
+                </div>
+                
+                <!-- Zoom Controls -->
+                <div class="zoom-controls" id="zoomControls" style="display: none;">
+                    <button class="zoom-btn" onclick="zoomOutImage()">➖</button>
+                    <button class="zoom-btn reset-zoom" onclick="resetZoom()">⟳</button>
+                    <button class="zoom-btn" onclick="zoomInImage()">➕</button>
+                </div>
+                
+                <!-- Image Thumbnails -->
+                <div class="image-thumbnails" id="imageThumbnails"></div>
+                
+                <!-- Zoom Instructions -->
+                <div class="zoom-instructions" id="zoomInstructions" style="display: none;">
+                    <strong>Zoom:</strong> Click/Tap image • Pinch zoom • Drag to pan
+                </div>
+                
+                <div class="menu-navigation">
+                    <button class="nav-btn" id="prevMenuBtn" onclick="prevMenuImage()">❮</button>
+                    <div class="image-counter" id="imageCounter">1 / 1</div>
+                    <button class="nav-btn" id="nextMenuBtn" onclick="nextMenuImage()">❯</button>
+                </div>
+            </div>
+            
+            <div class="menu-contact-info">
+                <h3 style="color: var(--primary); margin-bottom: 15px;">How to Order</h3>
+                <p style="color: var(--gray); margin-bottom: 20px; font-size: 14px;">Check the menu above and call the hotel directly to place your order.</p>
+                
+                <div class="contact-grid">
+                    <div class="contact-item">
+                        <div class="contact-icon">📞</div>
+                        <div>
+                            <div style="font-weight: 600; font-size: 15px;" id="popupHotelPhone">98765 43210</div>
+                            <div style="color: var(--gray); font-size: 13px;">Call to Order</div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">📍</div>
+                        <div>
+                            <div style="font-weight: 600; font-size: 15px;" id="popupHotelAddress">Main Road, Mumbai</div>
+                            <div style="color: var(--gray); font-size: 13px;">Visit or Order</div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">🕒</div>
+                        <div>
+                            <div style="font-weight: 600; font-size: 15px;" id="popupHotelTiming">7:00 AM - 11:00 PM</div>
+                            <div style="color: var(--gray); font-size: 13px;">Open Hours</div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">🎁</div>
+                        <div>
+                            <div style="font-weight: 600; font-size: 15px;" id="popupHotelOffer">15% discount</div>
+                            <div style="color: var(--gray); font-size: 13px;">Samaj Offer</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="call-btn" id="callHotelBtn" onclick="callHotel()">
+                        📞 Call Now to Order
+                    </button>
+                </div>
+                
+                <p style="text-align: center; color: var(--gray); font-size: 13px; margin-top: 15px; line-height: 1.5;">
+                    <strong>Tip:</strong> Mention you're from Shri Mumbai Purush Samaj to avail special discount
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <a href="index.html" class="footer-logo">SHRI MUMBAI SAMAJ</a>
+                    <p style="color:#bdc3c7;margin-bottom:20px;line-height:1.6;font-size:14px;">A premier community organization dedicated to cultural preservation, professional development, and social service since 1995.</p>
+                    <div style="color:#bdc3c7;font-size:14px;">
+                        <p>📍 123 Cultural Street, Mumbai 400028</p>
+                        <p>📞 022-12345678</p>
+                        <p>📧 info@mumbaipurushsamaj.org</p>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="committee.html">Committee</a></li>
+                        <li><a href="membership.html">Membership</a></li>
+                        <li><a href="events.html">Events Calendar</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="hotels.html">Partner Hotels</a></li>
+                        <li><a href="gallery.html">Photo Gallery</a></li>
+                        <li><a href="donations.html">Make Donation</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <ul>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="#">LinkedIn</a></li>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">YouTube</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2024 Shri Mumbai Purush Samaj. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Hotel data with menu images
+        const hotelsData = {
+            annapurna: {
+                name: "Annapurna Veg Hotel",
+                cuisine: "North Indian • South Indian • Chinese",
+                phone: "9876543210",
+                address: "Main Road, Near Railway Station, Mumbai",
+                timing: "7:00 AM - 11:00 PM",
+                offer: "15% discount on total bill",
+                menuImages: [
+                    "https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                ]
+            },
+            shivsagar: {
+                name: "Shiv Sagar Restaurant",
+                cuisine: "Gujarati • Rajasthani • Punjabi",
+                phone: "9876543211",
+                address: "Market Area, Mumbai",
+                timing: "8:00 AM - 11:30 PM",
+                offer: "10% discount + Free Gulab Jamun",
+                menuImages: [
+                    "https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                ]
+            },
+            gurukripa: {
+                name: "Guru Kripa Bhojanalaya",
+                cuisine: "Traditional Thali • Sweets • Snacks",
+                phone: "9876543212",
+                address: "Temple Road, Mumbai",
+                timing: "6:00 AM - 10:30 PM",
+                offer: "20% discount on Thali",
+                menuImages: []
+            },
+            citylight: {
+                name: "City Light Family Restaurant",
+                cuisine: "Multi-cuisine • Family Dining",
+                phone: "9876543213",
+                address: "City Light Area, Mumbai",
+                timing: "10:00 AM - 12:00 AM",
+                offer: "15% discount + Free Soft Drink",
+                menuImages: [
+                    "https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                ]
+            },
+            tajmahal: {
+                name: "Taj Mahal Veg Restaurant",
+                cuisine: "Mughlai • North Indian • Chinese",
+                phone: "9876543214",
+                address: "Prime Road, Mumbai",
+                timing: "11:00 AM - 11:30 PM",
+                offer: "Free appetizer with order above ₹500",
+                menuImages: [
+                    "https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                ]
+            },
+            bhavan: {
+                name: "Bhavan Hotel & Sweets",
+                cuisine: "Sweets • Snacks • Fast Food",
+                phone: "9876543215",
+                address: "Sweet Market, Mumbai",
+                timing: "8:00 AM - 10:00 PM",
+                offer: "10% discount on sweets",
+                menuImages: [
+                    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                ]
+            }
+        };
+
+        // Initialize hotels grid
+        document.addEventListener('DOMContentLoaded', function() {
+            renderHotelsGrid();
+            initMobileMenu();
+        });
+
+        // Render hotels grid
+        function renderHotelsGrid() {
+            const container = document.getElementById('hotelsContainer');
+            container.innerHTML = '';
+            
+            Object.keys(hotelsData).forEach(hotelId => {
+                const hotel = hotelsData[hotelId];
+                
+                const hotelCard = document.createElement('div');
+                hotelCard.className = 'hotel-card';
+                hotelCard.onclick = () => openMenuPopup(hotelId);
+                
+                hotelCard.innerHTML = `
+                    <div class="hotel-header">
+                        <div class="hotel-icon">${getHotelIcon(hotelId)}</div>
+                        <div class="hotel-info">
+                            <h3 class="truncate">${hotel.name}</h3>
+                            <div class="hotel-rating">⭐ ${getRandomRating()}/5 (${getRandomReviews()} reviews)</div>
+                            <div class="hotel-cuisine truncate">${hotel.cuisine}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="hotel-contact">
+                        <p><strong>📍 Address:</strong> <span class="truncate">${hotel.address}</span></p>
+                        <p><strong>📞 Phone:</strong> ${hotel.phone}</p>
+                        <p><strong>🕒 Timing:</strong> ${hotel.timing}</p>
+                        <p><strong>🎁 Samaj Offer:</strong> ${hotel.offer}</p>
+                    </div>
+                    
+                    <button class="view-menu-btn" onclick="event.stopPropagation(); openMenuPopup('${hotelId}')">
+                        ${hotel.menuImages.length > 0 ? '📋 View Menu & Order' : '📞 Call for Menu'}
+                    </button>
+                `;
+                
+                container.appendChild(hotelCard);
+            });
+        }
+
+        function getHotelIcon(hotelId) {
+            const icons = {
+                annapurna: '🍽️',
+                shivsagar: '🥘',
+                gurukripa: '🍛',
+                citylight: '🌟',
+                tajmahal: '👑',
+                bhavan: '🛕'
+            };
+            return icons[hotelId] || '🏨';
+        }
+
+        function getRandomRating() {
+            return (Math.random() * 1.5 + 3.5).toFixed(1);
+        }
+
+        function getRandomReviews() {
+            return Math.floor(Math.random() * 200) + 200;
+        }
+
+        // Mobile menu toggle
+        function initMobileMenu() {
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const navMenu = document.getElementById('navMenu');
+            
+            if (mobileMenuBtn && navMenu) {
+                mobileMenuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    navMenu.classList.toggle('active');
+                });
+                
+                // Close menu when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!navMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                        navMenu.classList.remove('active');
+                    }
+                });
+                
+                // Close menu when clicking a link
+                navMenu.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        navMenu.classList.remove('active');
+                    });
+                });
+            }
+        }
+
+        // Menu popup variables
+        let currentHotel = null;
+        let currentImageIndex = 0;
+        let currentScale = 1;
+        let currentTranslate = { x: 0, y: 0 };
+        let isDragging = false;
+        let dragStart = { x: 0, y: 0 };
+        let currentImage = null;
+        let touchStartDistance = 0;
+
+        // Open menu popup
+        function openMenuPopup(hotelId) {
+            currentHotel = hotelId;
+            currentImageIndex = 0;
+            currentScale = 1;
+            currentTranslate = { x: 0, y: 0 };
+            
+            const hotel = hotelsData[hotelId];
+            
+            // Update popup content
+            document.getElementById('popupHotelName').textContent = hotel.name;
+            document.getElementById('popupHotelCuisine').textContent = hotel.cuisine;
+            document.getElementById('popupHotelPhone').textContent = hotel.phone;
+            document.getElementById('popupHotelAddress').textContent = hotel.address;
+            document.getElementById('popupHotelTiming').textContent = hotel.timing;
+            document.getElementById('popupHotelOffer').textContent = hotel.offer;
+            
+            // Update call button
+            document.getElementById('callHotelBtn').setAttribute('onclick', `callHotel('${hotel.phone}', '${hotel.name}')`);
+            
+            // Load menu images
+            loadMenuImages();
+            
+            // Show popup
+            document.getElementById('menuPopup').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            
+            // Close mobile menu if open
+            document.getElementById('navMenu').classList.remove('active');
+        }
+
+        // Load menu images
+        function loadMenuImages() {
+            const wrapper = document.getElementById('menuImageWrapper');
+            const thumbnailsContainer = document.getElementById('imageThumbnails');
+            const zoomControls = document.getElementById('zoomControls');
+            const zoomInstructions = document.getElementById('zoomInstructions');
+            const hotel = hotelsData[currentHotel];
+            
+            wrapper.innerHTML = '';
+            thumbnailsContainer.innerHTML = '';
+            
+            if (hotel.menuImages.length === 0) {
+                // Show "no menu" message
+                wrapper.innerHTML = `
+                    <div class="no-menu">
+                        <div style="font-size: 40px; margin-bottom: 15px;">📋</div>
+                        <h3>Menu Not Available</h3>
+                        <p>Menu images for this hotel havent been uploaded yet.</p>
+                        <p>Please call the hotel directly for menu details.</p>
+                    </div>
+                `;
+                
+                // Hide zoom controls and navigation
+                zoomControls.style.display = 'none';
+                zoomInstructions.style.display = 'none';
+                document.getElementById('prevMenuBtn').style.display = 'none';
+                document.getElementById('nextMenuBtn').style.display = 'none';
+                document.getElementById('imageCounter').style.display = 'none';
+                thumbnailsContainer.style.display = 'none';
+                return;
+            }
+            
+            // Show zoom controls and navigation
+            zoomControls.style.display = 'flex';
+            zoomInstructions.style.display = 'block';
+            document.getElementById('prevMenuBtn').style.display = 'flex';
+            document.getElementById('nextMenuBtn').style.display = 'flex';
+            document.getElementById('imageCounter').style.display = 'block';
+            thumbnailsContainer.style.display = 'flex';
+            
+            // Create slides for each image
+            hotel.menuImages.forEach((imageSrc, index) => {
+                // Create slide
+                const slide = document.createElement('div');
+                slide.className = 'menu-image-slide';
+                slide.id = `slide-${index}`;
+                if (index === 0) slide.classList.add('active');
+                
+                // Create loading indicator
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'loading';
+                slide.appendChild(loadingDiv);
+                
+                // Create image
+                const img = new Image();
+                img.className = 'menu-image';
+                img.id = `image-${index}`;
+                img.src = imageSrc;
+                img.alt = `${hotel.name} Menu Page ${index + 1}`;
+                img.loading = 'lazy';
+                
+                // Image load event
+                img.onload = function() {
+                    loadingDiv.remove();
+                    slide.appendChild(img);
+                    
+                    // Add zoom and drag events for this image
+                    if (index === 0) {
+                        currentImage = img;
+                        setupImageZoom(img);
+                    }
+                };
+                
+                // Image error event
+                img.onerror = function() {
+                    loadingDiv.remove();
+                    slide.innerHTML = `
+                        <div style="text-align: center; padding: 40px 20px; color: var(--gray);">
+                            <div style="font-size: 40px; margin-bottom: 15px;">❌</div>
+                            <h3>Image Failed to Load</h3>
+                            <p>Menu image could not be loaded.</p>
+                        </div>
+                    `;
+                };
+                
+                wrapper.appendChild(slide);
+                
+                // Create thumbnail
+                const thumbnail = document.createElement('div');
+                thumbnail.className = 'thumbnail';
+                thumbnail.id = `thumb-${index}`;
+                if (index === 0) thumbnail.classList.add('active');
+                thumbnail.onclick = (e) => {
+                    e.stopPropagation();
+                    goToImage(index);
+                };
+                
+                const thumbImg = document.createElement('img');
+                thumbImg.src = imageSrc;
+                thumbImg.alt = `Thumbnail ${index + 1}`;
+                
+                thumbnail.appendChild(thumbImg);
+                thumbnailsContainer.appendChild(thumbnail);
+            });
+            
+            updateNavigation();
+        }
+
+        // Setup image zoom
+        function setupImageZoom(img) {
+            if (!img) return;
+            
+            resetZoom();
+            
+            // Click to toggle zoom
+            img.onclick = function(e) {
+                e.stopPropagation();
+                if (currentScale === 1) {
+                    zoomInImage();
+                } else {
+                    resetZoom();
+                }
+            };
+            
+            // Double-click to reset
+            img.ondblclick = function(e) {
+                e.stopPropagation();
+                resetZoom();
+            };
+            
+            // Mouse wheel zoom
+            img.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (window.innerWidth <= 768) return; // Disable wheel zoom on mobile
+                
+                const rect = img.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                zoomAtPoint(delta, mouseX, mouseY);
+            });
+            
+            // Touch events for mobile
+            img.addEventListener('touchstart', handleTouchStart, { passive: false });
+            img.addEventListener('touchmove', handleTouchMove, { passive: false });
+            img.addEventListener('touchend', handleTouchEnd);
+            
+            // Mouse drag events
+            img.addEventListener('mousedown', startDrag);
+            
+            updateCursor();
+        }
+
+        // Touch handlers for pinch zoom
+        function handleTouchStart(e) {
+            e.preventDefault();
+            
+            if (e.touches.length === 2) {
+                // Pinch zoom start
+                const touch1 = e.touches[0];
+                const touch2 = e.touches[1];
+                touchStartDistance = Math.hypot(
+                    touch2.clientX - touch1.clientX,
+                    touch2.clientY - touch1.clientY
+                );
+            } else if (e.touches.length === 1 && currentScale > 1) {
+                // Single touch for dragging
+                isDragging = true;
+                const touch = e.touches[0];
+                dragStart = {
+                    x: touch.clientX - currentTranslate.x,
+                    y: touch.clientY - currentTranslate.y
+                };
+            }
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            
+            if (e.touches.length === 2) {
+                // Pinch zoom
+                const touch1 = e.touches[0];
+                const touch2 = e.touches[1];
+                const touchEndDistance = Math.hypot(
+                    touch2.clientX - touch1.clientX,
+                    touch2.clientY - touch1.clientY
+                );
+                
+                if (touchStartDistance > 0) {
+                    const scaleChange = (touchEndDistance - touchStartDistance) / 100;
+                    const rect = currentImage.getBoundingClientRect();
+                    const centerX = (touch1.clientX + touch2.clientX) / 2 - rect.left;
+                    const centerY = (touch1.clientY + touch2.clientY) / 2 - rect.top;
+                    
+                    zoomAtPoint(scaleChange, centerX, centerY);
+                    touchStartDistance = touchEndDistance;
+                }
+            } else if (e.touches.length === 1 && isDragging) {
+                // Drag to pan
+                const touch = e.touches[0];
+                currentTranslate.x = touch.clientX - dragStart.x;
+                currentTranslate.y = touch.clientY - dragStart.y;
+                updateImageTransform();
+            }
+        }
+
+        function handleTouchEnd() {
+            isDragging = false;
+            touchStartDistance = 0;
+        }
+
+        // Zoom functions
+        function zoomInImage() {
+            if (currentScale < 3) {
+                currentScale += 0.5;
+                updateImageTransform();
+                updateCursor();
+            }
+        }
+
+        function zoomOutImage() {
+            if (currentScale > 0.5) {
+                currentScale -= 0.5;
+                if (currentScale < 1) {
+                    currentScale = 1;
+                    currentTranslate = { x: 0, y: 0 };
+                }
+                updateImageTransform();
+                updateCursor();
+            }
+        }
+
+        function zoomAtPoint(delta, x, y) {
+            const newScale = Math.max(0.5, Math.min(3, currentScale + delta));
+            
+            const scaleChange = newScale - currentScale;
+            currentTranslate.x -= (x * scaleChange) / newScale;
+            currentTranslate.y -= (y * scaleChange) / newScale;
+            
+            currentScale = newScale;
+            updateImageTransform();
+            updateCursor();
+        }
+
+        function resetZoom() {
+            currentScale = 1;
+            currentTranslate = { x: 0, y: 0 };
+            updateImageTransform();
+            updateCursor();
+        }
+
+        function updateImageTransform() {
+            if (currentImage) {
+                currentImage.style.transform = `translate(${currentTranslate.x}px, ${currentTranslate.y}px) scale(${currentScale})`;
+            }
+        }
+
+        function updateCursor() {
+            if (currentImage) {
+                if (currentScale > 1) {
+                    currentImage.classList.add('zoomed');
+                    currentImage.style.cursor = 'grab';
+                } else {
+                    currentImage.classList.remove('zoomed');
+                    currentImage.style.cursor = 'zoom-in';
+                }
+            }
+        }
+
+        // Drag functionality
+        function startDrag(e) {
+            if (currentScale <= 1 || window.innerWidth <= 768) return;
+            
+            e.preventDefault();
+            isDragging = true;
+            dragStart = {
+                x: e.clientX - currentTranslate.x,
+                y: e.clientY - currentTranslate.y
+            };
+            
+            document.addEventListener('mousemove', onDrag);
+            document.addEventListener('mouseup', stopDrag);
+            
+            if (currentImage) {
+                currentImage.style.cursor = 'grabbing';
+            }
+        }
+
+        function onDrag(e) {
+            if (!isDragging) return;
+            
+            currentTranslate.x = e.clientX - dragStart.x;
+            currentTranslate.y = e.clientY - dragStart.y;
+            updateImageTransform();
+        }
+
+        function stopDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', onDrag);
+            document.removeEventListener('mouseup', stopDrag);
+            
+            updateCursor();
+        }
+
+        // Navigation functions
+        function nextMenuImage() {
+            const hotel = hotelsData[currentHotel];
+            if (hotel.menuImages.length === 0) return;
+            
+            currentImageIndex = (currentImageIndex + 1) % hotel.menuImages.length;
+            showCurrentImage();
+        }
+
+        function prevMenuImage() {
+            const hotel = hotelsData[currentHotel];
+            if (hotel.menuImages.length === 0) return;
+            
+            currentImageIndex = (currentImageIndex - 1 + hotel.menuImages.length) % hotel.menuImages.length;
+            showCurrentImage();
+        }
+
+        function goToImage(index) {
+            const hotel = hotelsData[currentHotel];
+            if (index >= 0 && index < hotel.menuImages.length) {
+                currentImageIndex = index;
+                showCurrentImage();
+            }
+        }
+
+        function showCurrentImage() {
+            const hotel = hotelsData[currentHotel];
+            
+            resetZoom();
+            
+            // Hide all slides
+            document.querySelectorAll('.menu-image-slide').forEach(slide => {
+                slide.classList.remove('active');
+            });
+            
+            // Show current slide
+            const currentSlide = document.getElementById(`slide-${currentImageIndex}`);
+            if (currentSlide) {
+                currentSlide.classList.add('active');
+                currentImage = document.getElementById(`image-${currentImageIndex}`);
+                if (currentImage) {
+                    setupImageZoom(currentImage);
+                }
+            }
+            
+            // Update thumbnails
+            document.querySelectorAll('.thumbnail').forEach((thumb, index) => {
+                thumb.classList.toggle('active', index === currentImageIndex);
+            });
+            
+            updateNavigation();
+        }
+
+        function updateNavigation() {
+            const hotel = hotelsData[currentHotel];
+            const totalImages = hotel.menuImages.length;
+            
+            document.getElementById('imageCounter').textContent = 
+                `${currentImageIndex + 1} / ${totalImages}`;
+            
+            const prevBtn = document.getElementById('prevMenuBtn');
+            const nextBtn = document.getElementById('nextMenuBtn');
+            
+            if (totalImages <= 1) {
+                prevBtn.style.visibility = 'hidden';
+                nextBtn.style.visibility = 'hidden';
+            } else {
+                prevBtn.style.visibility = 'visible';
+                nextBtn.style.visibility = 'visible';
+            }
+        }
+
+        // Close menu popup
+        function closeMenuPopup() {
+            document.getElementById('menuPopup').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            resetZoom();
+        }
+
+        // Call hotel function
+        function callHotel(phone, hotelName) {
+            if (confirm(`Call ${hotelName} at ${phone}?`)) {
+                window.location.href = `tel:${phone}`;
+            }
+        }
+
+        // Search hotels function
+        function searchHotels() {
+            const searchTerm = document.getElementById('hotelSearch').value.toLowerCase();
+            const hotelCards = document.querySelectorAll('.hotel-card');
+            
+            hotelCards.forEach(card => {
+                const hotelName = card.querySelector('h3').textContent.toLowerCase();
+                const hotelCuisine = card.querySelector('.hotel-cuisine').textContent.toLowerCase();
+                const hotelAddress = card.querySelector('.hotel-contact').textContent.toLowerCase();
+                
+                if (hotelName.includes(searchTerm) || 
+                    hotelCuisine.includes(searchTerm) || 
+                    hotelAddress.includes(searchTerm) ||
+                    searchTerm === '') {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            const popup = document.getElementById('menuPopup');
+            
+            if (popup.style.display === 'flex') {
+                switch(e.key) {
+                    case 'Escape':
+                        closeMenuPopup();
+                        break;
+                    case 'ArrowLeft':
+                        prevMenuImage();
+                        break;
+                    case 'ArrowRight':
+                        nextMenuImage();
+                        break;
+                    case '+':
+                    case '=':
+                        if (e.ctrlKey) break;
+                        e.preventDefault();
+                        zoomInImage();
+                        break;
+                    case '-':
+                    case '_':
+                        if (e.ctrlKey) break;
+                        e.preventDefault();
+                        zoomOutImage();
+                        break;
+                    case '0':
+                        resetZoom();
+                        break;
+                }
+            }
+        });
+
+        // Close popup when clicking outside
+        document.getElementById('menuPopup').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeMenuPopup();
+            }
+        });
+
+        // Prevent image drag default
+        document.addEventListener('dragstart', function(e) {
+            if (e.target.tagName === 'IMG') {
+                e.preventDefault();
+            }
+        });
+
+        // Window resize handling
+        window.addEventListener('resize', function() {
+            if (currentImage) {
+                updateCursor();
+            }
+        });
+    </script>
+</body>
+</html>

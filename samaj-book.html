@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Samaj Book | Shri Mumbai Purush Samaj</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Add required libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        /* ===== SAMAJ BOOK STYLES ===== */
+        :root {
+            --book-primary: #2c3e50;
+            --book-secondary: #3498db;
+            --book-accent: #1abc9c;
+            --page-bg: #ffffff;
+            --page-text: #333333;
+            --page-border: #ddd;
+            --page-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Book Container */
+        .book-container {
+            padding: 80px 20px 40px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .book-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .book-header h1 {
+            color: var(--book-primary);
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .book-header p {
+            color: var(--book-primary);
+            opacity: 0.8;
+            font-size: 18px;
+        }
+
+        /* Book Viewer */
+        .book-viewer {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Book Controls */
+        .book-controls {
+            background: var(--book-primary);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .control-btn.print-btn {
+            background: var(--book-accent);
+        }
+
+        .control-btn.print-btn:hover {
+            background: #16a085;
+        }
+
+        .control-btn.pdf-btn {
+            background: #e74c3c;
+        }
+
+        .control-btn.pdf-btn:hover {
+            background: #c0392b;
+        }
+
+        .page-counter {
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            padding: 0 15px;
+        }
+
+        /* Book Content */
+        .book-content {
+            padding: 40px;
+            min-height: 70vh;
+            position: relative;
+            overflow-y: auto;
+            background: var(--page-bg);
+        }
+
+        /* Page Styles */
+        .book-page {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 10px 30px var(--page-shadow);
+            border: 1px solid var(--page-border);
+            min-height: 500px;
+            position: relative;
+        }
+
+        /* Cover Page */
+        .cover-page {
+            background: linear-gradient(135deg, var(--book-primary), #1a252f);
+            color: white;
+            text-align: center;
+            padding: 60px 40px;
+            border-radius: 10px;
+        }
+
+        .cover-page h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .cover-page .subtitle {
+            font-size: 24px;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+
+        .cover-page .year {
+            font-size: 20px;
+            opacity: 0.8;
+            margin-top: 60px;
+        }
+
+        /* Text Only Page */
+        .text-page h2 {
+            color: var(--book-primary);
+            border-bottom: 3px solid var(--book-secondary);
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+
+        .text-page h3 {
+            color: var(--book-secondary);
+            margin: 25px 0 15px;
+        }
+
+        .text-page p {
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: var(--page-text);
+        }
+
+        .text-page ul, .text-page ol {
+            margin: 20px 0;
+            padding-left: 25px;
+        }
+
+        .text-page li {
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        /* Image + Text Layout */
+        .image-text-page {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        @media (max-width: 768px) {
+            .image-text-page {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        .image-text-page.left-image .image-container {
+            order: 1;
+        }
+
+        .image-text-page.left-image .text-container {
+            order: 2;
+        }
+
+        .image-text-page.right-image .image-container {
+            order: 2;
+        }
+
+        .image-text-page.right-image .text-container {
+            order: 1;
+        }
+
+        .image-container {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .image-container:hover img {
+            transform: scale(1.03);
+        }
+
+        .image-caption {
+            text-align: center;
+            font-style: italic;
+            color: var(--page-text);
+            opacity: 0.8;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        /* Table Page */
+        .table-page {
+            overflow-x: auto;
+        }
+
+        .table-page h2 {
+            color: var(--book-primary);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .book-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .book-table th {
+            background: var(--book-secondary);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .book-table th:last-child {
+            border-right: none;
+        }
+
+        .book-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--page-border);
+            vertical-align: top;
+        }
+
+        .book-table tr:hover {
+            background: rgba(52, 152, 219, 0.05);
+        }
+
+        .book-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table-notes {
+            margin-top: 20px;
+            font-style: italic;
+            color: var(--page-text);
+            opacity: 0.8;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        /* Gallery Page */
+        .gallery-page {
+            text-align: center;
+        }
+
+        .gallery-page h2 {
+            color: var(--book-primary);
+            margin-bottom: 30px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .gallery-item {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .gallery-caption {
+            padding: 15px;
+            background: white;
+            font-size: 14px;
+            color: var(--page-text);
+        }
+
+        /* Contact Page */
+        .contact-page .contact-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .contact-item {
+            background: rgba(52, 152, 219, 0.05);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid var(--book-secondary);
+        }
+
+        .contact-item h4 {
+            color: var(--book-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .contact-item p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        /* Back Cover */
+        .backcover-page {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            text-align: center;
+            padding: 60px 40px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 500px;
+        }
+
+        .quote-text {
+            font-size: 24px;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            font-style: italic;
+            max-width: 600px;
+        }
+
+        .quote-translation {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        .backcover-footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Table of Contents */
+        .toc-sidebar {
+            position: fixed;
+            left: -300px;
+            top: 0;
+            width: 280px;
+            height: 100%;
+            background: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            transition: left 0.3s ease;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .toc-sidebar.active {
+            left: 0;
+        }
+
+        .toc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--book-secondary);
+        }
+
+        .toc-header h3 {
+            color: var(--book-primary);
+            margin: 0;
+        }
+
+        .close-toc {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--book-primary);
+        }
+
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .toc-item {
+            margin-bottom: 10px;
+        }
+
+        .toc-link {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            color: var(--page-text);
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .toc-link:hover {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--book-secondary);
+        }
+
+        .toc-link.active {
+            background: var(--book-secondary);
+            color: white;
+        }
+
+        /* PDF Generation Modal */
+        .pdf-generation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            flex-direction: column;
+        }
+
+        .pdf-generation-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            margin: 25px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--book-accent), #3498db);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        #pdfStatus {
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+            min-height: 20px;
+        }
+
+        .pdf-error {
+            color: #e74c3c !important;
+            font-weight: bold;
+        }
+
+        .pdf-success {
+            color: #27ae60 !important;
+            font-weight: bold;
+        }
+
+        /* Loading State */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--book-secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .book-container {
+                padding: 70px 15px 30px;
+            }
+            
+            .book-header h1 {
+                font-size: 28px;
+            }
+            
+            .book-content {
+                padding: 20px;
+            }
+            
+            .book-page {
+                padding: 25px;
+            }
+            
+            .control-group {
+                width: 100%;
+                justify-content: center;
+                margin: 5px 0;
+            }
+            
+            .book-controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .pdf-generation-content {
+                padding: 25px;
+                margin: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cover-page h1 {
+                font-size: 32px;
+            }
+            
+            .cover-page .subtitle {
+                font-size: 18px;
+            }
+            
+            .book-page {
+                padding: 20px;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .book-container,
+            .book-container * {
+                visibility: visible;
+            }
+            
+            .book-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 0;
+                margin: 0;
+                background: white;
+            }
+            
+            .book-viewer {
+                box-shadow: none;
+                border-radius: 0;
+                margin: 0;
+                max-width: 100%;
+            }
+            
+            .book-content {
+                padding: 0;
+                margin: 0;
+                transform: none !important;
+            }
+            
+            .book-page {
+                page-break-after: always;
+                page-break-inside: avoid;
+                break-inside: avoid;
+                margin: 0;
+                padding: 20mm;
+                box-shadow: none;
+                border: 1px solid #ddd;
+                min-height: 277mm;
+                max-height: 277mm;
+                width: 210mm;
+                position: relative;
+                display: block !important;
+            }
+            
+            /* Hide controls and other elements */
+            .book-controls,
+            .toc-sidebar,
+            .navbar,
+            .footer,
+            .book-header,
+            .pdf-generation-container {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">SHRI <span>MUMBAI</span> SAMAJ</a>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="committee.html">Committee</a></li>
+                <li><a href="membership.html">Membership</a></li>
+                <li><a href="hotels.html">Hotels</a></li>
+                <li><a href="samaj-book.html" class="active">Samaj Book</a></li>
+                <li><a href="events.html">Events</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="donations.html">Donations</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- BOOK CONTAINER -->
+    <section class="book-container">
+        <div class="book-header">
+            <h1>Samaj Book</h1>
+            <p>Official Document of Shri Mumbai Purush Samaj</p>
+        </div>
+
+        <div class="book-viewer">
+            <!-- Book Controls -->
+            <div class="book-controls">
+                <div class="control-group">
+                    <button class="control-btn" id="prevPage" title="Previous Page">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="control-btn" id="nextPage" title="Next Page">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <div class="page-counter" id="pageCounter">Page 1 of 9</div>
+                </div>
+
+                <div class="control-group">
+                    <button class="control-btn" id="tocToggle" title="Table of Contents">
+                        <i class="fas fa-book-open"></i>
+                    </button>
+                    <button class="control-btn" id="zoomIn" title="Zoom In">
+                        <i class="fas fa-search-plus"></i>
+                    </button>
+                    <button class="control-btn" id="zoomOut" title="Zoom Out">
+                        <i class="fas fa-search-minus"></i>
+                    </button>
+                    <!-- <button class="control-btn print-btn" id="printBook" title="Print">
+                        <i class="fas fa-print"></i>
+                    </button> -->
+                    <button class="control-btn pdf-btn" id="downloadPDF" title="Download PDF">
+                        <i class="fas fa-file-pdf"></i>
+                    </button>
+                    <button class="control-btn" id="fullscreen" title="Fullscreen">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Book Content -->
+            <div class="book-content" id="bookContent">
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div class="spinner"></div>
+                </div>
+                <!-- Pages will be loaded here dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- PDF Generation Modal -->
+    <div class="pdf-generation-container" id="pdfGenerationModal">
+        <div class="pdf-generation-content">
+            <h2 style="color: var(--book-primary); margin-bottom: 15px;">📚 Generating PDF Book</h2>
+            <p style="color: #666; margin-bottom: 20px;">Please wait while we generate your complete PDF document.</p>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="pdfProgress"></div>
+            </div>
+            
+            <div id="pdfStatus">Initializing PDF generation...</div>
+            <div id="pdfPageInfo" style="font-size: 12px; color: #999; margin-top: 5px;"></div>
+            
+            <div id="pdfError" style="display: none; color: #e74c3c; margin-top: 15px; padding: 10px; background: #ffeaea; border-radius: 5px;">
+                <strong>Error:</strong> <span id="errorMessage"></span>
+                <button onclick="retryPDF()" style="background: #e74c3c; color: white; border: none; padding: 5px 15px; border-radius: 3px; margin-top: 10px; cursor: pointer;">Retry</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table of Contents Sidebar -->
+    <div class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+            <h3>Table of Contents</h3>
+            <button class="close-toc" id="closeToc">&times;</button>
+        </div>
+        <ul class="toc-list" id="tocList"></ul>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <a href="index.html" class="footer-logo">SHRI MUMBAI SAMAJ</a>
+                    <p style="color:#bdc3c7;margin-bottom:25px;line-height:1.7;">A premier community organization dedicated to cultural preservation, professional development, and social service since 1995.</p>
+                    <div style="color:#bdc3c7;">
+                        <p>📍 123 Cultural Street, Mumbai 400028</p>
+                        <p>📞 022-12345678</p>
+                        <p>📧 info@mumbaipurushsamaj.org</p>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="committee.html">Committee</a></li>
+                        <li><a href="membership.html">Membership</a></li>
+                        <li><a href="events.html">Events Calendar</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="hotels.html">Partner Hotels</a></li>
+                        <li><a href="gallery.html">Photo Gallery</a></li>
+                        <li><a href="donations.html">Make Donation</a></li>
+                        <li><a href="samaj-book.html">Samaj Book</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <ul>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="#">LinkedIn</a></li>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">YouTube</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2024 Shri Mumbai Purush Samaj. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="js/script.js"></script>
+    <!-- Book Data -->
+    <script>
+        // data.js - Samaj Book Content Management
+        const samajBookData = {
+            metadata: {
+                title: "Shri Mumbai Purush Samaj - Official Book",
+                subtitle: "Community History, Values & Activities",
+                publishedDate: "2024",
+                version: "1.0",
+                lastUpdated: "December 2024"
+            },
+
+            tableOfContents: [
+                { id: "chapter1", title: "Our History", page: 1 },
+                { id: "chapter2", title: "Mission & Vision", page: 3 },
+                { id: "chapter3", title: "Committee Structure", page: 5 },
+                { id: "chapter4", title: "Membership Benefits", page: 8 },
+                { id: "chapter5", title: "Events Calendar", page: 12 },
+                { id: "chapter6", title: "Hotel Partners", page: 15 },
+                { id: "chapter7", title: "Gallery Highlights", page: 18 },
+                { id: "chapter8", title: "Contact Information", page: 22 }
+            ],
+
+            pages: [
+                {
+                    id: "cover",
+                    pageNumber: 1,
+                    type: "cover",
+                    content: {
+                        title: "Shri Mumbai Purush Samaj",
+                        subtitle: "Official Community Book",
+                        year: "2024 Edition"
+                    },
+                    background: "#1a365d"
+                },
+                {
+                    id: "history",
+                    pageNumber: 2,
+                    type: "text-only",
+                    title: "Our History & Journey",
+                    content: `
+                        <h2>Founded in 1995</h2>
+                        <p>Shri Mumbai Purush Samaj was established by a group of visionary individuals who recognized the need for a platform where men could connect, grow, and contribute to society.</p>
+                        
+                        <h3>Early Beginnings</h3>
+                        <p>Starting with just 15 members in a small community hall, our organization has grown exponentially over the past 25+ years. What began as informal monthly gatherings has evolved into a structured community with over 500 active members.</p>
+                        
+                        <h3>Milestones</h3>
+                        <ul>
+                            <li><strong>1995:</strong> Foundation established with 15 founding members</li>
+                            <li><strong>2000:</strong> First permanent meeting place acquired</li>
+                            <li><strong>2010:</strong> Membership crossed 300 members</li>
+                            <li><strong>2015:</strong> 20th Anniversary Celebration</li>
+                            <li><strong>2020:</strong> Digital transformation with website launch</li>
+                            <li><strong>2024:</strong> Current membership: 500+ active members</li>
+                        </ul>
+                    `
+                },
+                {
+                    id: "mission",
+                    pageNumber: 3,
+                    type: "image-text",
+                    layout: "left-image",
+                    title: "Our Mission & Vision",
+                    image: {
+                        url: "https://images.unsplash.com/photo-1545235617-9465d2a55698?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                        alt: "Community Service Activity",
+                        caption: "Annual Food Distribution Drive"
+                    },
+                    content: `
+                        <h3>Our Mission</h3>
+                        <p>To foster a supportive community of men dedicated to cultural preservation, professional development, and social service.</p>
+                        
+                        <h3>Core Values</h3>
+                        <ul>
+                            <li><strong>Integrity:</strong> Conduct all activities with honesty and transparency</li>
+                            <li><strong>Community:</strong> Believe in the power of collective growth</li>
+                            <li><strong>Service:</strong> Commitment to serving members and society</li>
+                            <li><strong>Growth:</strong> Foster continuous learning and development</li>
+                        </ul>
+                        
+                        <h3>Vision for 2030</h3>
+                        <p>To become Mumbais leading community organization, impacting 1000+ families through cultural, educational, and social initiatives.</p>
+                    `
+                },
+                {
+                    id: "committee",
+                    pageNumber: 4,
+                    type: "table",
+                    title: "Executive Committee 2024-2025",
+                    table: {
+                        headers: ["Position", "Name", "Contact", "Tenure"],
+                        rows: [
+                            ["President", "Rajesh Sharma", "president@samaj.org", "2024-2026"],
+                            ["Secretary", "Amit Patel", "secretary@samaj.org", "2024-2026"],
+                            ["Treasurer", "Sunil Gupta", "treasurer@samaj.org", "2024-2026"],
+                            ["Vice President", "Vikram Singh", "vicepresident@samaj.org", "2024-2026"],
+                            ["Youth Wing Head", "Rohan Mehta", "youth@samaj.org", "2024-2025"],
+                            ["Cultural Head", "Sanjay Kumar", "cultural@samaj.org", "2024-2025"]
+                        ]
+                    },
+                    notes: "*All committee members are elected for a 2-year term"
+                },
+                {
+                    id: "membership",
+                    pageNumber: 5,
+                    type: "image-text",
+                    layout: "right-image",
+                    title: "Membership Benefits",
+                    image: {
+                        url: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                        alt: "Networking Event",
+                        caption: "Monthly Business Networking Meet"
+                    },
+                    content: `
+                        <h3>Why Join Our Samaj?</h3>
+                        <p>Becoming a member opens doors to numerous opportunities and benefits:</p>
+                        
+                        <h4>Exclusive Benefits</h4>
+                        <ul>
+                            <li>Access to all community events and workshops</li>
+                            <li>Special discounts at partner hotels and restaurants</li>
+                            <li>Business networking opportunities</li>
+                            <li>Priority registration for cultural programs</li>
+                            <li>Monthly newsletter with updates</li>
+                        </ul>
+                        
+                        <h4>Support System</h4>
+                        <ul>
+                            <li>Personal and professional mentorship</li>
+                            <li>Community support during emergencies</li>
+                            <li>Educational assistance programs</li>
+                            <li>Health and wellness initiatives</li>
+                        </ul>
+                    `
+                },
+                {
+                    id: "events",
+                    pageNumber: 6,
+                    type: "table",
+                    title: "Annual Events Calendar",
+                    table: {
+                        headers: ["Event", "Date", "Time", "Venue", "Description"],
+                        rows: [
+                            ["Annual Diwali Celebration", "November 12", "6:00 PM", "Samaj Bhawan", "Cultural performances, dinner, fireworks"],
+                            ["Holi Milan Samaroh", "March 15", "10:00 AM", "Community Ground", "Color festival with traditional music"],
+                            ["Business Networking", "Last Friday", "5:00 PM", "Conference Hall", "Monthly professional networking"],
+                            ["Annual Picnic", "December 15", "9:00 AM", "National Park", "Family day with games and food"],
+                            ["Health Camp", "Quarterly", "9:00 AM", "Health Center", "Free health checkups for members"],
+                            ["Sports Tournament", "January 20", "8:00 AM", "Sports Complex", "Annual cricket and badminton"]
+                        ]
+                    }
+                },
+                {
+                    id: "gallery",
+                    pageNumber: 7,
+                    type: "gallery",
+                    title: "Memorable Moments",
+                    images: [
+                        {
+                            url: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
+                            alt: "Diwali Celebration",
+                            caption: "Annual Diwali Celebration 2023"
+                        },
+                        {
+                            url: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
+                            alt: "Cultural Event",
+                            caption: "Traditional Dance Performance"
+                        },
+                        {
+                            url: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
+                            alt: "Sports Event",
+                            caption: "Cricket Tournament Finals"
+                        },
+                        {
+                            url: "https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
+                            alt: "Workshop",
+                            caption: "Educational Workshop Session"
+                        }
+                    ]
+                },
+                {
+                    id: "contact",
+                    pageNumber: 8,
+                    type: "contact",
+                    title: "Contact Information",
+                    content: `
+                        <div class="contact-info-grid">
+                            <div class="contact-item">
+                                <h4>📞 Phone Numbers</h4>
+                                <p>Office: 022-12345678</p>
+                                <p>President: 98765 43210</p>
+                                <p>Secretary: 98765 43211</p>
+                                <p>Emergency: 98765 43219</p>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <h4>📧 Email Addresses</h4>
+                                <p>General: info@mumbaipurushsamaj.org</p>
+                                <p>Membership: membership@samaj.org</p>
+                                <p>Events: events@samaj.org</p>
+                                <p>Donations: donations@samaj.org</p>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <h4>📍 Address</h4>
+                                <p>Shri Mumbai Purush Samaj Bhawan</p>
+                                <p>123 Cultural Street</p>
+                                <p>Shivaji Park Area</p>
+                                <p>Mumbai - 400028</p>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <h4>🕒 Meeting Hours</h4>
+                                <p>Every Sunday: 5 PM - 7 PM</p>
+                                <p>Committee Meeting: 1st Saturday</p>
+                                <p>General Body: Quarterly</p>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    id: "contact",
+                    pageNumber: 9,
+                    type: "contact",
+                    title: "Contact Information new",
+                    content: `
+                        <div class="contact-info-grid">
+                            <div class="contact-item">
+                                <h4>📞 Phone Numbers</h4>
+                                <p>Office: 022-12345678</p>
+                                <p>President: 98765 43210</p>
+                                <p>Secretary: 98765 43211</p>
+                                <p>Emergency: 98765 43219</p>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <h4>📧 Email Addresses</h4>
+                                <p>General: info@mumbaipurushsamaj.org</p>
+                                <p>Membership: membership@samaj.org</p>
+                                <p>Events: events@samaj.org</p>
+                                <p>Donations: donations@samaj.org</p>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <h4>📍 Address</h4>
+                                <p>Shri Mumbai Purush Samaj Bhawan</p>
+                                <p>123 Cultural Street</p>
+                                <p>Shivaji Park Area</p>
+                                <p>Mumbai - 400028</p>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <h4>🕒 Meeting Hours</h4>
+                                <p>Every Sunday: 5 PM - 7 PM</p>
+                                <p>Committee Meeting: 1st Saturday</p>
+                                <p>General Body: Quarterly</p>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    id: "backcover",
+                    pageNumber: 10,
+                    type: "backcover",
+                    content: {
+                        quote: "सर्वे भवन्तु सुखिनः सर्वे सन्तु निरामयाः।\nसर्वे भद्राणि पश्यन्तु मा कश्चिद्दुःखभाग्भवेत्॥",
+                        translation: "May all be happy, may all be free from illness.\nMay all see what is auspicious, may no one suffer.",
+                        footer: "© 2024 Shri Mumbai Purush Samaj. All rights reserved."
+                    },
+                    background: "#2c3e50"
+                }
+            ],
+
+            addPage: function(pageData) {
+                if (!pageData.pageNumber) {
+                    pageData.pageNumber = this.pages.length + 1;
+                }
+                this.pages.push(pageData);
+                this.updateTableOfContents();
+                return pageData;
+            },
+
+            updateTableOfContents: function() {
+                this.tableOfContents = this.pages
+                    .filter(page => page.type !== 'cover' && page.type !== 'backcover')
+                    .map((page, index) => ({
+                        id: page.id,
+                        title: page.title || `Chapter ${index + 1}`,
+                        page: page.pageNumber
+                    }));
+            },
+
+            exportForPDF: function() {
+                return {
+                    metadata: this.metadata,
+                    tableOfContents: this.tableOfContents,
+                    pages: this.pages,
+                    totalPages: this.pages.length
+                };
+            }
+        };
+
+        samajBookData.updateTableOfContents();
+        window.samajBookData = samajBookData;
+    </script>
+
+    <!-- Main Application Script -->
+    <script>
+        class SamajBook {
+            constructor() {
+                this.currentPage = 0;
+                this.zoomLevel = 1;
+                this.bookData = window.samajBookData;
+                
+                if (!this.bookData) {
+                    this.showError();
+                    return;
+                }
+                
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.loadBook();
+                this.renderTableOfContents();
+            }
+
+            bindEvents() {
+                document.getElementById('prevPage')?.addEventListener('click', () => this.prevPage());
+                document.getElementById('nextPage')?.addEventListener('click', () => this.nextPage());
+                document.getElementById('tocToggle')?.addEventListener('click', () => this.toggleTOC());
+                document.getElementById('closeToc')?.addEventListener('click', () => this.toggleTOC());
+                document.getElementById('zoomIn')?.addEventListener('click', () => this.zoomIn());
+                document.getElementById('zoomOut')?.addEventListener('click', () => this.zoomOut());
+                document.getElementById('printBook')?.addEventListener('click', () => this.printBook());
+                document.getElementById('downloadPDF')?.addEventListener('click', () => this.generatePDF());
+                document.getElementById('fullscreen')?.addEventListener('click', () => this.toggleFullscreen());
+                
+                document.addEventListener('keydown', (e) => this.handleKeyboard(e));
+            }
+
+            showError() {
+                const bookContent = document.getElementById('bookContent');
+                if (bookContent) {
+                    bookContent.innerHTML = `
+                        <div style="text-align: center; padding: 50px; color: #e74c3c;">
+                            <h2>Error Loading Book</h2>
+                            <p>Unable to load book data. Please check the console for details.</p>
+                            <button onclick="location.reload()" style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                                Reload Page
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+
+            loadBook() {
+                const loadingSpinner = document.getElementById('loadingSpinner');
+                setTimeout(() => {
+                    if (loadingSpinner) loadingSpinner.style.display = 'none';
+                    if (this.bookData?.pages) this.renderPage(this.currentPage);
+                }, 500);
+            }
+
+            renderPage(pageIndex) {
+                const bookContent = document.getElementById('bookContent');
+                if (!bookContent || !this.bookData?.pages) return;
+                
+                const page = this.bookData.pages[pageIndex];
+                if (!page) return;
+                
+                let pageHTML = '';
+                switch(page.type) {
+                    case 'cover': pageHTML = this.renderCoverPage(page); break;
+                    case 'text-only': pageHTML = this.renderTextPage(page); break;
+                    case 'image-text': pageHTML = this.renderImageTextPage(page); break;
+                    case 'table': pageHTML = this.renderTablePage(page); break;
+                    case 'gallery': pageHTML = this.renderGalleryPage(page); break;
+                    case 'contact': pageHTML = this.renderContactPage(page); break;
+                    case 'backcover': pageHTML = this.renderBackcoverPage(page); break;
+                    default: pageHTML = this.renderTextPage(page);
+                }
+                
+                bookContent.innerHTML = `<div class="book-page ${page.type}-page" id="page-${page.id}">${pageHTML}</div>`;
+                this.updatePageCounter();
+                this.updateActiveTOCItem();
+                this.applyZoom();
+            }
+
+            renderCoverPage(page) {
+                return `
+                    <div class="cover-page">
+                        <h1>${page.content.title}</h1>
+                        <div class="subtitle">${page.content.subtitle}</div>
+                        <div class="year">${page.content.year}</div>
+                    </div>
+                `;
+            }
+
+            renderTextPage(page) {
+                return `
+                    <div class="text-page">
+                        <h2>${page.title}</h2>
+                        <div class="text-content">${page.content}</div>
+                    </div>
+                `;
+            }
+
+            renderImageTextPage(page) {
+                const imageSide = page.layout === 'left-image' ? 'left-image' : 'right-image';
+                return `
+                    <div class="image-text-page ${imageSide}">
+                        <div class="image-container">
+                            <img src="${page.image.url}" alt="${page.image.alt}" loading="lazy">
+                            ${page.image.caption ? `<div class="image-caption">${page.image.caption}</div>` : ''}
+                        </div>
+                        <div class="text-container">
+                            <h2>${page.title}</h2>
+                            <div class="text-content">${page.content}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderTablePage(page) {
+                let tableHTML = '<table class="book-table">';
+                tableHTML += '<thead><tr>';
+                page.table.headers.forEach(header => tableHTML += `<th>${header}</th>`);
+                tableHTML += '</tr></thead><tbody>';
+                page.table.rows.forEach(row => {
+                    tableHTML += '<tr>';
+                    row.forEach(cell => tableHTML += `<td>${cell}</td>`);
+                    tableHTML += '</tr>';
+                });
+                tableHTML += '</tbody></table>';
+                
+                return `
+                    <div class="table-page">
+                        <h2>${page.title}</h2>
+                        ${tableHTML}
+                        ${page.notes ? `<div class="table-notes">${page.notes}</div>` : ''}
+                    </div>
+                `;
+            }
+
+            renderGalleryPage(page) {
+                let galleryHTML = '<div class="gallery-grid">';
+                page.images.forEach(image => {
+                    galleryHTML += `
+                        <div class="gallery-item">
+                            <img src="${image.url}" alt="${image.alt}" loading="lazy">
+                            <div class="gallery-caption">${image.caption}</div>
+                        </div>
+                    `;
+                });
+                galleryHTML += '</div>';
+                
+                return `
+                    <div class="gallery-page">
+                        <h2>${page.title}</h2>
+                        ${galleryHTML}
+                    </div>
+                `;
+            }
+
+            renderContactPage(page) {
+                return `
+                    <div class="contact-page">
+                        <h2>${page.title}</h2>
+                        <div class="contact-content">${page.content}</div>
+                    </div>
+                `;
+            }
+
+            renderBackcoverPage(page) {
+                return `
+                    <div class="backcover-page">
+                        <div class="quote-text">${page.content.quote}</div>
+                        <div class="quote-translation">${page.content.translation}</div>
+                        <div class="backcover-footer">${page.content.footer}</div>
+                    </div>
+                `;
+            }
+
+            renderTableOfContents() {
+                const tocList = document.getElementById('tocList');
+                if (!tocList || !this.bookData?.tableOfContents) return;
+                
+                tocList.innerHTML = '';
+                this.bookData.tableOfContents.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'toc-item';
+                    li.innerHTML = `
+                        <a href="#" class="toc-link" data-page="${item.page - 1}">
+                            <span>${item.title}</span>
+                            <span>Page ${item.page}</span>
+                        </a>
+                    `;
+                    tocList.appendChild(li);
+                    
+                    li.querySelector('.toc-link').addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const pageIndex = parseInt(e.currentTarget.dataset.page);
+                        this.goToPage(pageIndex);
+                        this.toggleTOC();
+                    });
+                });
+            }
+
+            updatePageCounter() {
+                const counter = document.getElementById('pageCounter');
+                if (!counter || !this.bookData?.pages) return;
+                counter.textContent = `Page ${this.currentPage + 1} of ${this.bookData.pages.length}`;
+            }
+
+            updateActiveTOCItem() {
+                document.querySelectorAll('.toc-link').forEach(link => {
+                    link.classList.remove('active');
+                    const pageIndex = parseInt(link.dataset.page);
+                    if (pageIndex === this.currentPage) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            prevPage() {
+                if (!this.bookData?.pages) return;
+                if (this.currentPage > 0) {
+                    this.currentPage--;
+                    this.renderPage(this.currentPage);
+                }
+            }
+
+            nextPage() {
+                if (!this.bookData?.pages) return;
+                if (this.currentPage < this.bookData.pages.length - 1) {
+                    this.currentPage++;
+                    this.renderPage(this.currentPage);
+                }
+            }
+
+            goToPage(pageIndex) {
+                if (!this.bookData?.pages) return;
+                if (pageIndex >= 0 && pageIndex < this.bookData.pages.length) {
+                    this.currentPage = pageIndex;
+                    this.renderPage(this.currentPage);
+                }
+            }
+
+            toggleTOC() {
+                const toc = document.getElementById('tocSidebar');
+                if (toc) toc.classList.toggle('active');
+            }
+
+            zoomIn() {
+                if (this.zoomLevel < 2) {
+                    this.zoomLevel += 0.1;
+                    this.applyZoom();
+                }
+            }
+
+            zoomOut() {
+                if (this.zoomLevel > 0.5) {
+                    this.zoomLevel -= 0.1;
+                    this.applyZoom();
+                }
+            }
+
+            applyZoom() {
+                const bookContent = document.getElementById('bookContent');
+                if (bookContent) {
+                    bookContent.style.transform = `scale(${this.zoomLevel})`;
+                    bookContent.style.transformOrigin = 'top center';
+                }
+            }
+
+            // FIXED PRINT FUNCTION - Shows ALL pages
+            printBook() {
+                // Store current state
+                const originalPage = this.currentPage;
+                const originalZoom = this.zoomLevel;
+                const originalContent = document.getElementById('bookContent').innerHTML;
+                
+                // Reset zoom for printing
+                this.zoomLevel = 1;
+                this.applyZoom();
+                
+                // Create a temporary container with ALL pages
+                const tempContainer = document.createElement('div');
+                tempContainer.style.cssText = `
+                    position: fixed;
+                    left: -9999px;
+                    top: 0;
+                    width: 210mm;
+                    background: white;
+                    z-index: 9999;
+                `;
+                
+                // Generate HTML for all pages
+                let allPagesHTML = '';
+                this.bookData.pages.forEach((page, index) => {
+                    let pageHTML = '';
+                    switch(page.type) {
+                        case 'cover': pageHTML = this.renderCoverPage(page); break;
+                        case 'text-only': pageHTML = this.renderTextPage(page); break;
+                        case 'image-text': pageHTML = this.renderImageTextPage(page); break;
+                        case 'table': pageHTML = this.renderTablePage(page); break;
+                        case 'gallery': pageHTML = this.renderGalleryPage(page); break;
+                        case 'contact': pageHTML = this.renderContactPage(page); break;
+                        case 'backcover': pageHTML = this.renderBackcoverPage(page); break;
+                        default: pageHTML = this.renderTextPage(page);
+                    }
+                    
+                    allPagesHTML += `
+                        <div class="book-page ${page.type}-page" style="
+                            page-break-after: always;
+                            margin: 0 auto;
+                            padding: 20mm;
+                            width: 170mm;
+                            min-height: 257mm;
+                            max-height: 257mm;
+                            background: white;
+                            border: 1px solid #ddd;
+                        ">
+                            ${pageHTML}
+                        </div>
+                    `;
+                });
+                
+                tempContainer.innerHTML = allPagesHTML;
+                document.body.appendChild(tempContainer);
+                
+                // Add print styles
+                const printStyles = document.createElement('style');
+                printStyles.innerHTML = `
+                    @media print {
+                        body * {
+                            visibility: hidden;
+                        }
+                        .book-page, .book-page * {
+                            visibility: visible;
+                        }
+                        .book-page {
+                            position: absolute;
+                            left: 0;
+                            top: 0;
+                            page-break-after: always;
+                        }
+                        @page {
+                            size: A4;
+                            margin: 20mm;
+                        }
+                    }
+                `;
+                document.head.appendChild(printStyles);
+                
+                // Trigger print
+                setTimeout(() => {
+                    window.print();
+                    
+                    // Clean up
+                    setTimeout(() => {
+                        document.body.removeChild(tempContainer);
+                        document.head.removeChild(printStyles);
+                        this.zoomLevel = originalZoom;
+                        this.applyZoom();
+                        this.currentPage = originalPage;
+                        document.getElementById('bookContent').innerHTML = originalContent;
+                        this.updatePageCounter();
+                        this.updateActiveTOCItem();
+                    }, 100);
+                }, 500);
+            }
+
+            // FIXED PDF GENERATION FUNCTION
+            async generatePDF() {
+                try {
+                    // Show modal
+                    const modal = document.getElementById('pdfGenerationModal');
+                    const progressBar = document.getElementById('pdfProgress');
+                    const statusText = document.getElementById('pdfStatus');
+                    const pageInfo = document.getElementById('pdfPageInfo');
+                    const errorDiv = document.getElementById('pdfError');
+                    const errorMessage = document.getElementById('errorMessage');
+                    
+                    modal.style.display = 'flex';
+                    progressBar.style.width = '0%';
+                    statusText.textContent = 'Initializing PDF generation...';
+                    pageInfo.textContent = '';
+                    errorDiv.style.display = 'none';
+                    
+                    // Check for required libraries
+                    if (typeof window.jspdf === 'undefined') {
+                        throw new Error('PDF library not loaded. Please check your internet connection.');
+                    }
+                    
+                    if (typeof html2canvas === 'undefined') {
+                        throw new Error('Canvas library not loaded. Please check your internet connection.');
+                    }
+                    
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF({
+                        orientation: 'portrait',
+                        unit: 'mm',
+                        format: 'a4'
+                    });
+                    
+                    const pageWidth = doc.internal.pageSize.getWidth();
+                    const pageHeight = doc.internal.pageSize.getHeight();
+                    
+                    // Create temporary container for PDF generation
+                    const tempContainer = document.createElement('div');
+                    tempContainer.style.cssText = `
+                        position: fixed;
+                        left: -9999px;
+                        top: 0;
+                        width: ${pageWidth}mm;
+                        background: white;
+                        z-index: 9998;
+                    `;
+                    
+                    document.body.appendChild(tempContainer);
+                    
+                    // Generate each page
+                    for (let i = 0; i < this.bookData.pages.length; i++) {
+                        const page = this.bookData.pages[i];
+                        
+                        // Update progress
+                        const progress = ((i + 1) / this.bookData.pages.length) * 100;
+                        progressBar.style.width = `${progress}%`;
+                        statusText.textContent = `Processing page ${i + 1} of ${this.bookData.pages.length}`;
+                        pageInfo.textContent = `Current: ${page.title || page.type}`;
+                        
+                        // Render the page HTML
+                        let pageHTML = '';
+                        switch(page.type) {
+                            case 'cover': pageHTML = this.renderCoverPage(page); break;
+                            case 'text-only': pageHTML = this.renderTextPage(page); break;
+                            case 'image-text': pageHTML = this.renderImageTextPage(page); break;
+                            case 'table': pageHTML = this.renderTablePage(page); break;
+                            case 'gallery': pageHTML = this.renderGalleryPage(page); break;
+                            case 'contact': pageHTML = this.renderContactPage(page); break;
+                            case 'backcover': pageHTML = this.renderBackcoverPage(page); break;
+                            default: pageHTML = this.renderTextPage(page);
+                        }
+                        
+                        // Create page container
+                        const pageContainer = document.createElement('div');
+                        pageContainer.style.cssText = `
+                            width: ${pageWidth}mm;
+                            min-height: ${pageHeight}mm;
+                            background: white;
+                            padding: 20mm;
+                            box-sizing: border-box;
+                        `;
+                        pageContainer.innerHTML = pageHTML;
+                        tempContainer.innerHTML = '';
+                        tempContainer.appendChild(pageContainer);
+                        
+                        // Wait for images to load
+                        await this.waitForImages(pageContainer);
+                        
+                        try {
+                            // Convert to canvas
+                            const canvas = await html2canvas(pageContainer, {
+                                scale: 2,
+                                useCORS: true,
+                                logging: false,
+                                backgroundColor: '#ffffff'
+                            });
+                            
+                            // Add image to PDF
+                            const imgData = canvas.toDataURL('image/jpeg', 0.9);
+                            
+                            if (i > 0) {
+                                doc.addPage();
+                            }
+                            
+                            doc.addImage(imgData, 'JPEG', 0, 0, pageWidth, pageHeight);
+                            
+                        } catch (canvasError) {
+                            console.warn(`Canvas error on page ${i + 1}:`, canvasError);
+                            // Fallback: Add simple text page
+                            if (i > 0) doc.addPage();
+                            doc.setFontSize(16);
+                            doc.text(page.title || `Page ${i + 1}`, 20, 20);
+                            if (page.content) {
+                                const text = page.content.replace(/<[^>]*>/g, ' ').substring(0, 500) + '...';
+                                doc.setFontSize(10);
+                                doc.text(text, 20, 30, { maxWidth: pageWidth - 40 });
+                            }
+                        }
+                        
+                        // Small delay to prevent overwhelming the browser
+                        await new Promise(resolve => setTimeout(resolve, 300));
+                    }
+                    
+                    // Remove temporary container
+                    document.body.removeChild(tempContainer);
+                    
+                    // Update status
+                    statusText.textContent = 'Finalizing PDF...';
+                    pageInfo.textContent = 'Preparing download...';
+                    
+                    // Save PDF
+                    const fileName = `samaj-book-${new Date().toISOString().split('T')[0]}.pdf`;
+                    doc.save(fileName);
+                    
+                    // Success message
+                    statusText.textContent = 'PDF generated successfully!';
+                    statusText.className = 'pdf-success';
+                    pageInfo.textContent = `File saved as: ${fileName}`;
+                    
+                    // Close modal after delay
+                    setTimeout(() => {
+                        modal.style.display = 'none';
+                        statusText.className = '';
+                    }, 2000);
+                    
+                } catch (error) {
+                    console.error('PDF Generation Error:', error);
+                    
+                    // Show error message
+                    const statusText = document.getElementById('pdfStatus');
+                    const errorDiv = document.getElementById('pdfError');
+                    const errorMessage = document.getElementById('errorMessage');
+                    
+                    statusText.textContent = 'Error generating PDF';
+                    statusText.className = 'pdf-error';
+                    errorMessage.textContent = error.message || 'Unknown error occurred';
+                    errorDiv.style.display = 'block';
+                    
+                    // Clean up any temporary elements
+                    const tempContainer = document.querySelector('div[style*="left: -9999px"]');
+                    if (tempContainer) {
+                        document.body.removeChild(tempContainer);
+                    }
+                }
+            }
+
+            waitForImages(container) {
+                return new Promise((resolve) => {
+                    const images = container.getElementsByTagName('img');
+                    let loadedCount = 0;
+                    const totalImages = images.length;
+                    
+                    if (totalImages === 0) {
+                        resolve();
+                        return;
+                    }
+                    
+                    const checkLoaded = () => {
+                        loadedCount++;
+                        if (loadedCount === totalImages) {
+                            resolve();
+                        }
+                    };
+                    
+                    for (let img of images) {
+                        if (img.complete) {
+                            checkLoaded();
+                        } else {
+                            img.onload = checkLoaded;
+                            img.onerror = checkLoaded; // Continue even if image fails to load
+                        }
+                    }
+                    
+                    // Timeout after 3 seconds
+                    setTimeout(resolve, 3000);
+                });
+            }
+
+            toggleFullscreen() {
+                const bookViewer = document.querySelector('.book-viewer');
+                if (!bookViewer) return;
+                
+                if (!document.fullscreenElement) {
+                    bookViewer.requestFullscreen?.();
+                } else {
+                    document.exitFullscreen?.();
+                }
+            }
+
+            handleKeyboard(e) {
+                if (!this.bookData?.pages) return;
+                
+                switch(e.key) {
+                    case 'ArrowLeft': e.preventDefault(); this.prevPage(); break;
+                    case 'ArrowRight': e.preventDefault(); this.nextPage(); break;
+                    case '+': if (e.ctrlKey) { e.preventDefault(); this.zoomIn(); } break;
+                    case '-': if (e.ctrlKey) { e.preventDefault(); this.zoomOut(); } break;
+                    case '0': if (e.ctrlKey) { e.preventDefault(); this.zoomLevel = 1; this.applyZoom(); } break;
+                    case 't': case 'T': if (e.ctrlKey) { e.preventDefault(); this.toggleTOC(); } break;
+                    case 'p': case 'P': if (e.ctrlKey) { e.preventDefault(); this.printBook(); } break;
+                }
+            }
+        }
+
+        // Global function to retry PDF generation
+        window.retryPDF = function() {
+            if (window.samajBook) {
+                window.samajBook.generatePDF();
+            }
+        };
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof window.samajBookData !== 'undefined') {
+                window.samajBook = new SamajBook();
+                console.log('Samaj Book initialized successfully');
+            }
+        });
+    </script>
+</body>
+</html>
